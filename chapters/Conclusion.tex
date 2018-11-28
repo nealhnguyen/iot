@@ -1,0 +1,23 @@
+\chapter{Conclusion}
+\label{Conclusion}
+
+To conclude, we have shown that it is easy to tell which smart speaker is in use based on just the initial spike. Devices are each making their unique trade-off between power and network throughout when idle and in use. This tradeoff leads to unique signatures that allow us to classify devices. For the smart speakers, it is as obvious as the first power spike during usage.
+
+Some patterns can be difficult to make out with so much noise coming from within a house for power data. However, if enough devices are idle, it is still possible. It shows an indirect security flaw in our power-line and how that defense should be fortified. This paper showed that we could guess what smart speaker is in use and whether the lights are on in the house from the power data. With more research, it is likely that other private information can be inferred from the power line data.
+
+This proves that more research should be done to analyze and classify IoT devices. We have created an expansive database of network and power data for 16 IoT devices that spread over ten months, accumulating 184.94 GB of data and 172,445,929 entries in the database. Along with that, we have created an analysis tool to examine the database visually. We hope this will catalyze future research in IoT devices.
+
+\section{Future Work}
+This paper creates many opportunities for future work to continue research surrounding IoT devices.
+
+The first thing we want to do is to maintain an ever-growing database. We want to clean up the database for quick queries, available to the public with a relevant event log. There are also some inconsistencies in the database, such as cases where we plug a device into an incorrectly labeled smart switch. Changing all those names would be apart of maintenance of this database.
+
+Next, we want to make the realtimeIoTgrapher public and improve its features. Hosting it on a publically hosted website would analyze the database much more accessible for new researchers.
+
+We want to also utilize both power and network data in tandem for analysis to see if that yields better classification results.
+
+With many botnet attacks in the recent past, we also attempted to hack into these devices with Mirai and analyze power usage and network throughput of these devices. Getting Mirai working in the restricted time turned out to be unfeasible, but would be interesting to continue for future work.
+
+Finally, applying machine learning to any of the ideas above or this paper's project would be open to future work as well. We quickly tried a neural net with 0 percent accuracy and an LSTM and achieved 30 percent accuracy given five devices (slightly better than random). We had also planned to alter a human activity recognition machine learning (HAR)  model to fit the database for classification of device model given power data over a set period. However, we did not have time for that, and that would be interesting for future work as well.
+
+Regardless, there are many opened opportunities for future work because of the database. They can quickly utilize the realtimeIoTGrapher to analyze the database or manually query data. There have already been students who have utilized the database for various research projects.

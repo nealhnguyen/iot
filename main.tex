@@ -1,0 +1,165 @@
+\documentclass[12pt]{ucthesis}
+
+\usepackage{etex}
+\usepackage[morefloats=125]{morefloats}
+\usepackage[hyphens]{url}
+\usepackage[caption=false]{subfig}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[letterpaper]{geometry}
+\usepackage[overload]{textcase}
+\usepackage{color}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage{morefloats}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{makecell}
+\usepackage{appendix}
+\usepackage[]{algorithm2e}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage[breaklinks=true,hidelinks,pdfusetitle]{hyperref}
+\usepackage{cleveref}
+\usepackage{ifthen}
+\usepackage{booktabs}
+\usepackage{inconsolata}
+
+\hypersetup{final}
+
+\graphicspath{ {figures/} }
+
+\makeindex
+
+% Shrink the size of headers
+\titleformat{\chapter}[display]
+        {\normalfont\normalsize\centering}
+        {\ifthenelse{\equal{\thechapter}{A}}{APPENDICES\\[4.3ex]}{}\chaptertitlename\ \thechapter}
+        {0pt}{\normalsize\uppercase}
+\titlespacing*{\chapter}{0pt}{-20pt}{4.3ex plus .2ex}
+
+
+\titleformat*{\section}{\normalsize\bfseries}
+\titleformat*{\subsection}{\small\bfseries}
+\titleformat*{\subsubsection}{\small\bfseries}
+\titleformat*{\paragraph}{\small\bfseries}
+\titleformat*{\subparagraph}{\small\bfseries}
+
+\setlength{\parindent}{0.25in} \setlength{\parskip}{6pt}
+\geometry{verbose,nohead,tmargin=1in,bmargin=1in,lmargin=1.5in,rmargin=1in}
+\setcounter{tocdepth}{2}
+
+% Different font in captions (single-spaced, bold) ------------
+\newcommand{\captionfonts}{\small\bf\ssp}
+
+\newcommand{\mycaption}[2]{\caption[#1 --- #2]{#1 --- #2}}
+
+\makeatletter  % Allow the use of @ in command names
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{{\captionfonts #1: #2}}%
+  \ifdim \wd\@tempboxa >\hsize
+    {\captionfonts #1: #2\par}
+  \else
+    \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+\makeatother   % Cancel the effect of \makeatletter
+% ---------------------------------------
+
+% Define Appendix refs
+\crefname{app}{appendix}{appendices}
+\Crefname{app}{Appendix}{Appendices}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  language=Python,
+  %linewidth=5.55truein,
+  showstringspaces=false,
+  numbers=left,
+  stepnumber=1,
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\ttfamily,
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+  frame = single
+}
+
+\renewcommand\lstlistingname{Listing}
+\renewcommand\lstlistlistingname{LIST OF CODE LISTINGS}
+
+\begin{document}
+
+% Declarations for Front Matter
+\input{frontmatter}
+
+\maketitle
+
+\begin{frontmatter}
+
+% Custom made for Cal Poly (by Mark Barry, modified by Andrew Tsui).
+\copyrightpage
+
+% Custom made for Cal Poly (by Andrew Tsui).
+\committeemembershippage
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\begin{acknowledgements}
+\input{acknowledgements}
+\end{acknowledgements}
+
+\tableofcontents
+
+\listoftables
+
+\listoffigures
+
+\lstlistoflistings
+
+% Add CHAPTER into table of contents.
+\addtocontents{toc}{%
+   \noindent LIST OF CODE LISTINGS   . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\hspace{1.5em} x\newline
+}
+
+\addtocontents{toc}{%
+   \noindent CHAPTER
+}
+
+\end{frontmatter}
+
+% Avoid widows and orphans
+\widowpenalty10000
+\clubpenalty10000
+
+\pagestyle{plain}
+
+\renewcommand{\baselinestretch}{1.66}
+
+\input{chapter-outline}
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,bibliography}
+
+% Indents Appendix in Table of Contents
+\makeatletter
+\addtocontents{toc}{\let\protect\l@chapter\protect\l@section}
+\makeatother
+
+\begin{appendices}
+\input{appendix-outline}
+\end{appendices}
+
+\end{document}
