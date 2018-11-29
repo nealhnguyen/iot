@@ -175,8 +175,17 @@ To figure what the power spike at 18:12 is, we separated the graphs into individ
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/bestBballNetwork.png}
-  \caption{5 Smart Speakers Network throughput over time. Queried each device for the  best basketball player.}
+  \caption{5 Smart Speakers Network throughput over time. Queried each device for the best basketball player.}
   \label{fig:bestBballNetwork}
+\end{figure}
+
+The power spike information for each query type ("what's the weather", "what's the news", "who's the best basketball player") are shown below in figure \ref{fig:spikeVoltages}. This bar graph also includes the average spike height for each device over these three commands. The black line at the top of each bar shows the standard deviation. Averaging peak to peak voltage spikes for each device shows the Eufy Genie with a 390 mW spike with 36.1 mW standard deviation, the Google Home with a 606.7 mW spike with 110 mW standard deviation, the Echo Dot with a 2026.7 mW spike with 149.89 mW standard deviation.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{figures/spikeVoltages.png}
+  \caption{Spike summary of for each query.}
+  \label{fig:spikeVoltages}
 \end{figure}
 
 \section{Summed Power Graph With Noise}
