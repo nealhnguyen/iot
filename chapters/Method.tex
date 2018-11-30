@@ -30,7 +30,7 @@ Section \ref{Physical Layout and Setup} discuss what devices we used, the set up
 \section{Physical Layout and Setup}
 \label{Physical Layout and Setup}
 
-This section covers the physical setup and layout of the hardware used when setting up the IoT test bed, the IoT devices we tested, and how each device is set up. Figures \ref{fig:wemo} and \ref{fig:devices} show the IoT testbed set up.
+This section covers the physical setup and layout of the hardware used when setting up the IoT test bed, the IoT devices we tested, and how each device is set up. Figures \ref{fig:wemo} and \ref{fig:devices} show the IoT testbed set up. Setup was performed with Ryan Frawley and explained in his paper \ref{frawleyPaper}, this paper provides an updated description.
 
 \subsection{Wireless Access Point}
 \label{Wireless Access Point}
@@ -82,63 +82,63 @@ Streaming devices are IoT products that connect to a television or are built int
 
 The specific streaming devices we look at include the Roku Express, Amazon Fire TV, and the Google Chromecast. These devices represent three popular streaming platforms (Roku, Google Chromecast, Amazon Fire TV) that have a combined user base of over 110 million users who watch content at least once a month \cite{emarketer_2017}.
 
-To view content from these streaming devices, we use a Samsung smart TV. This TV also as streaming capabilities.
+To view content from these streaming devices, we use a Samsung smart TV. This TV also as streaming capabilities which we log but do not analyze in this paper.
 
 \subsubsection{Video Game Consoles}
 
-Video game consoles are systems that were initially built specifically to play video games. We use 2 out of the three most popular gaming devices including the Nintendo Switch which sold 17.8 million units \cite{nintendo} and the Xbox One, which sold 30 million units \cite{souppouris_2016} as of January 2018.
+Video game consoles are systems specifically built to play video games. We use two out of the three most popular gaming devices including the Nintendo Switch which sold 17.8 million units \cite{nintendo} and the Xbox One, which sold 30 million units \cite{souppouris_2016} as of January 2018.
 
 \subsubsection{Tablets}
 
-Tablets are devices that have phone operating systems running on them such as the Apple IPad, Samsung Galaxy tablet, and the Amazon Fire tablet. Ultimately these devices were mainly used for interacting with the other IoT devices since most of them require a smartphone or tablet for set up or control. Some of the IoT devices are also limited to either Android, which runs on the Galaxy, or IOS, which runs on the IPad, so we got both.
+Tablets are devices that have phone operating systems running on them such as the Apple IPad, Samsung Galaxy tablet, and the Amazon Fire tablet. These devices were used for interacting with the other IoT devices, which require a smartphone or tablet for set up or control. Some of the IoT devices are limited to either Android, which runs on the Galaxy, or IOS, which runs on the IPad. Although there is no analysis on these devices in the paper, the netowork packets are logged. There is no way to track the power usage of these devices because they run on battery.
 
 \subsubsection{Security Camera}
 
-Security cameras are cameras meant to run constantly as surveillance, streaming the video footage a user can view from any connected device at all times. Two out of the five largest recorded cybersecurity attacks targeted security cameras \cite{guest_2018}. The specific camera we use is the Eray camera. It is a generic Alibaba device with a weak username:password of admin:1234. A weak username and password makes it very susceptible to cyber attacks. There have also been reports that smart cameras have been found to send unencrypted data \cite{feamster_2016}. Because this device is a third party, unknown manufacturer, this device is an outlier for which we hope to get more interesting data.
+Security cameras are cameras meant to run constantly as surveillance, streaming the video footage so a user can view it from any connected device at any time. Two out of the five largest recorded cybersecurity attacks targeted security cameras \cite{guest_2018}. The specific camera we use is the Eray camera. It is a generic Alibaba device with a weak username:password of admin:1234. A weak username and password makes it very susceptible to cyber attacks. There have also been reports that smart cameras have been found to send unencrypted data \cite{feamster_2016}. We selected this device because it has weak login credentials and is susceptible to Mirai. We wanted to see if it would get hacked by Mirai or some other attack, but we found no indication of such.
 
 \subsubsection{Other Devices}
 
-We also connected several other devices that are harder to categorize.
+We also connected several other devices that are harder to categorize, analyze, or both.
 
 We have a smart hub connected to a smart lock, an indoor room temperature sensor, and smart LED light bulbs. These devices are difficult to analyze because they communicate with the smart hub through Zigbee or Bluetooth at which point the smart hub aggregates the data and communicates with the network. In order to look at the network traffic caused by smart lights individually, we prevented all devices besides the smart LED bulbs from communicating with the smart hub. This isolation minimized other packet noise to the smart hub so that we can monitor the smart hub traffic as a replacement for the smart LED bulbs. However, even then, the smart hub might have extra overhead for other tasks, making isolated analysis difficult.
 
-We also have a Chromebook which we used to control the Chromecast. However, because this is more a laptop than an IoT device, we decided to leave this out during our research
+We also have a Chromebook which we used to control the Chromecast. However, because this is more a laptop than an IoT device, we decided to leave this out of our research
 
 \subsection{Smart Power Plugs}
 
-Smart power plugs are WiFi capable, pass through outlets that a device plugs into. The outlets collect and transmit power states over the network. For this reason, they are critical to the power consumption logging in this research.
+Smart power plugs are WiFi capable, pass through outlets that another device plugs into. The outlets collect and transmit power usage over the network. They are critical to the power consumption logging in this research.
 
-We used the Belkin Wemo. We chose this smart plug because there are many open source Python libraries for pulling power information from them and because they were the easiest to set up.
+We used the Belkin Wemo Insight. We chose this smart plug because there are many open source Python libraries for pulling power information from them, and they are relatively affordable.
 
-When setting these smart plugs up, we named each smart plug based on the device connected to it so that when we pull power information with our scripts, we can easily reference data to a smart plug. This informal naming leads to issues when the wrong device is connected to the wrong smart plug, as discussed in section \ref{realtimeIoTGrapher.py}
+When setting these smart plugs up, we named each smart plug based on the device connected to it so that when we pull power information with our scripts, we can easily reference data to a smart plug. This informal naming led to issues when the wrong device is connected to the wrong smart plug, as discussed in section \ref{realtimeIoTGrapher.py}
 
 \subsection{Wiring and Configuration}
 
-When setting up the smart plugs, we manually named each smart plug in reference to the device connected to it. We also tried to set static IPs for each device, but we decided that the average user would not set up a static IP for their device and left dynamic IPs.
+We also tried to set static IPs for each device, but we decided that the average user would not set up a static IP for their device and left dynamic IPs.
 
-The next step was to set up each device and corresponding smart plug through their set up application, filling in the devices, name, email, network configuration, and any other setup details.
+The next step was to setup each device and corresponding smart plug through their corresponding setup application, filling in the device's, user name, email, network configuration, and etc. We used the device's name as its user name, e.g. the Echo Dot was given the username ``Echo Dot''.
 
-When plugging in all of the devices for the first time for power, we worked to plug each device into the corresponding Wemo smart plug and connected to our WAP during device set up so that we could instantly log power and traffic information. It was essential to log power as soon as possible to catch data while a device is starting up. Some devices had already been opened and used, so they do not contain startup information(Xbox and the Echo Dot 1).
+When plugging in all of the devices for the first time for power, we worked to plug each device into the corresponding Wemo smart plug and connected to our WAP during device set up so that we could instantly log power and network traffic information. It was essential to log power as soon as possible to capture a first-boot power profile for each device. Some devices had already been used, so they do not contain startup information(Xbox and the Echo Dot 1).
 
-Set up and configuration took up a significant portion of the time. We worked to set up each device with a separate email account. To do this, we made around 20 AOL accounts. We wanted email addresses that were not under control of the manufacturer of any of the devices. For example, we did not want to use any Gmail accounts because we did not want the Google home or Google Chromecast do perform domain-specific optimizations. When setting up AOL accounts, we also faced a limitation of the number of email accounts tied to a single phone number. We had to use different phone numbers in order to circumvent this.
+Set up and configuration took up a significant portion of the research time. We worked to set up each device with a separate email account. To do this, we made around 20 AOL accounts. We wanted email addresses that were not under control of the manufacturer of any of the devices. For example, we did not want to use any Gmail accounts because we did not want the Google Home or Google Chromecast to perform domain-specific optimizations. When setting up AOL accounts, we also faced a limitation of the number of email accounts tied to a single phone number. We had to use different phone numbers to circumvent this.
 
-We set up each device in waves, taking around a week to set everything up. Incremental device setup with no plan resulted in a messy work environment, which made it difficult to match a device to it is corresponding smart plug. The Wemos also take up too much space to be plugged right next to each other. After a month of data logging, it was difficult to keep track of each device because we had not kept it organized. We unplugged everything, renamed the Wemos, organized the wiring, and organized the location of each smart device resulting in the set up in figure \ref{fig:devices} and \ref{fig:wemo}. With limited power strips, the organization helped maximize power ports. We also made sure to face the button for each power plug towards our view so that we can quickly notice whether the power plugs were on or off. Organization streamlined the logging process in the long run. Debugging network and connection issues was much simpler with an ordered set up. Now we could quickly identify each device and go down the line when running procedures on the devices.
+We set up each device in waves, taking around a week to set everything up. Incremental device setup with no plan resulted in a messy work environment, which made it difficult to match a device to it is corresponding smart plug. After a month of data logging in a disorganized scheme where it was difficult to keep track of each device, we unplugged everything, renamed the Wemos, organized the wiring, and organized the location of each smart device resulting in the set up in figures \ref{fig:wemo} and \ref{fig:devices}. With limited power strips, the organization helped maximize power ports. We also made sure to face the button for each power plug towards our view so that we could quickly notice whether the power plugs were on or off. Organization streamlined the logging process in the long run; debugging network and connection issues was much simpler with an ordered set up. We could quickly identify redundant devices (there are two Echo Dots and Eufy Genies), run procedures on groups of devices, and determine the corresponding smart plug for each device.
 
 \section{Software}
 \label{software}
-This section covers the software components used to control the IoT test bed. It includes the scripts for logging power and network traffic, the database information, and the python script for visually viewing the database.
+This section covers the software components used to control the IoT test bed. It discusses the scripts for logging power and network traffic, the database information, and the python script for visually viewing the database.
 
 \subsection{Wireless AP Code}
-In order to turn the NUC into a wireless access point, we used a create\_ap script\cite{guest_2018}CITEoblique\_2017. This app takes in the WiFi name, WiFi password, and the wireless interface. This script turned the NUC into a wireless access point (WAP). We later found that, with newer versions of Ubuntu, there is a built-in feature for creating a hotspot through a wireless interface on the device\cite{guest_2018}CITEm\_2016. We later used this feature. Partially through our research, as we set up more IoT devices and demand for bandwidth through the WAP increased, we had to switch to an external antenna and rerun the script in order to set the USB antenna as the WAP wireless interface causing a void of traffic due to this switching.
+In order to turn the NUC into a wireless access point, we used a create\_ap script \cite{oblique_2017}. This app takes in the WiFi name, WiFi password, and the wireless interface. This script turned the NUC into a wireless access point (WAP). We later found that, with newer versions of Ubuntu, there is a built-in feature for creating a hotspot through a wireless interface on the device \cite{m_2016}. We later used this feature to simplify the amount of programs running and instead have a the OS handle the hotspot. Partially through our research, as we set up more IoT devices and demand for bandwidth through the WAP increased, we had to switch to an external antenna and rerun the script in order to set the USB antenna as the WAP wireless interface. During this time, there is a void in network and power entries in the database.
 
 \subsection{sniff.py}
 \label{sniff.py}
 
-Sniff.py is a python script that runs on the Intel NUC. It runs a thread for power logging and a thread for network logging. As each logger runs, it writes the network packets and power information to a MYSQL database hosted on AWS through the python mysqlclient library. If the database connection is lost, the script automatically reconnects.
+Sniff.py runs a thread for power logging and a thread for network logging. As each logger runs, it writes the network packets and power information to a MySql database hosted on AWS through the python mysqlclient \cite{mysqlclient} library. If the database connection is lost, the script automatically reconnects.
 
 \subsubsection{Network Logging}
 
-Network logging is the largest part of the script with 180 lines of code out of 290. It begins by opening a socket on the wireless interfaces connected. All IP packets are sniffed through this socket connection as shown in listing \ref{lst:sock}.
+It begins by opening a socket on the wireless interfaces connected. All IP packets are sniffed through this socket connection as shown in listing \ref{lst:sock}.
 
 \begin{lstlisting}[label={lst:sock},caption={Open and Read from a Socket},captionpos=b]
 self.socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(ETH_P_ALL))
@@ -148,33 +148,43 @@ while True:
     packet, address = self.socket.recvfrom(MTU)
 \end{lstlisting}
 
-Once we have sniffed a packet, we can obtain the raw metadata in the form of a hex dump. We preserve the hex dump block because it is a raw, untouched packet. The fields we write to the database are the source IP, source host, destination IP, destination host, time, size, type, protocol, source port, destination port, source host, destination host, and hex dump. We will explain what each field in the database section.
+Once we have sniffed a packet, we can obtain the metadata from the hex dump. We preserve this hex dump because in case we would want to extract more information from it later on. From each hex dump, we extract and store the source IP, source host, destination IP, destination host, time, size, type, protocol, source port, destination port, source host, destination host, and hex dump. We will explain what each field in section \ref{Database}.
 
 \subsubsection{Power Logging}
 
-The second addition to our IoT device analysis is the power information. To obtain this information, we rely heavily on the Belkin Wemos. Each Belkin Wemo Insight connects to an outlet and each IoT device plugs into the Wemos.
+The second addition to our IoT device analysis is the power information. To obtain this information, we rely heavily on the Belkin Wemo Insights. Each Wemo connects to an outlet and each IoT device plugs into the Wemos.
 
-We used the PyWemo python script to read power usage form the Wemos once per second. However, this is the highest we were able to obtain. The Wemo is capable of reading both power and energy in mW and kW hours.
+We used the PyWemo python script \cite{pywemo} to read power usage from the Wemos once per second. This is the highest frequency we could poll for power. The Wemo is capable of reading both power and energy in mW and kW hours.
 
-Once the script queries the Wemo for its power information, we relate the Wemo to the device connected to it by extracting the name of the Wemo. This information is used as well when pushing this data to our database.
+Once the script queries the Wemo for its power information, we relate the Wemo to the device connected to it by extracting the name of the Wemo. This information is used when pushing power data to our database.
 
-One issue with PyWemo and the Belkin Wemo's was that they would sometimes disconnect and the script would miss out on power data. To solve this issue, the script rescans for Wemos until it finds all the Wemos. If it does not find the of Wemo's in our testbed (hardcoded value). The code for this is shown below in figure \ref{fig:wemoRescanCode}
+One issue with PyWemo and the Belkin Wemos was that they would sometimes disconnect and the script would miss out on power data. To solve this issue, the script rescans for Wemos until it finds all 16 Wemos in our testbed. The rescan code for this is shown below in listing \ref{lst:wemoRescanCode}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/wemoRescanCode.png}
-    \caption{Rescan if all wemos not found.}
-    \label{fig:wemoRescanCode}
-\end{figure}
+\begin{lstlisting}[label={lst:wemoRescanCode},caption={Rescan if all wemos not found.},captionpos=b]
+    def scan_until_all_found():
+        print("Discovering Wemos")
+        switches = pywemo.discover_devices()
+        print("Discovered {} switches".format(len(switches)))
+        print(switches)
+        try_num = 1
+
+        while len(switches) < 16:
+            print("Did not discover enough switches, trying again{}...".format(try_num))
+            switches = pywemo.discover_devices()
+            try_num += 1
+            print("Discovered {} switches".format(len(switches)))
+
+        return switches
+    \end{lstlisting}
 
 \subsection{Database}
 \label{Database}
 
-To store all the result of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing this paper, the database currently holds 172,445,929 entries that take up 184.94 GB of space.
+To store all the result of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space.
 
 \subsubsection{Network Table}
 
-The largest part of our database is the IP network table. This table contains all the network packets that have gone through the NUC WAP. It is currently 179.1 GB and contains 116830077 entries. It is so large because it consists of constant network packets through at least 12 months of research. In those 12 months, we did many high bandwidth tasks such as playing music or video. These entries also contain the raw hex dump of the whole packet, which contains all the metadata plus data load, further contributing to the massive size of this table. The data table's rows represent a single packet with the columns shown in the table below \ref{tab:netcol}.
+The largest part of our database is the IP network table. This table contains all the network packets that have gone through the NUC WAP. It is currently 179.1 GB and contains 116,830,077 entries. It is so large because it consists of all network traffic generated over a 12 month period. In those 12 months, we did many high bandwidth tasks such as playing music or video. These entries contain the raw hex dump of the whole packet, which contains all the metadata plus data load, further contributing to the massive size of this table. The data table's rows represent a single packet with the columns shown in the table below \ref{tab:netcol}.
 
 \begin{table}[H]
     \centering
@@ -197,7 +207,7 @@ The largest part of our database is the IP network table. This table contains al
     \label{tab:netcol}
     \end{table}
 
-With these columns, some common SQL commands we used for our analysis includes common queries shown in figures \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}. The most useful commands generally required examining total throughput or device throughput. The SQL query shown in \ref{fig:navicatRollup}.
+Some common SQL commands we used for our analysis includes common queries shown in figures \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}. The most useful commands generally required examining total throughput or device throughput. The SQL query shown in \ref{fig:navicatRollup}.
 
 \begin{figure}[H]
     \centering
