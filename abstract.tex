@@ -1,7 +1,5 @@
-IoT devices are one of the fastest growing class of devices today. However, with so many new internet connected devices, there is little knowledge of whether they perform their advertised function and whether or not these devices are secure.
+There are currently 23.14 billion IoT devices in use worldwide, with 75.44 billion expected by 2025. Despite their ubiquity, however, there is little knowledge about the security and privacy implications of these devices. Large botnet attacks like Mirai have been recorded to leverage IoT devices with weak login credentials, enslaving 600,000 IoT devices for a large scale DDOS attack in 2016.
 
-To better understand these things about IoT devices, we have built an expansive database with network and power data for 16 IoT devices over ten months, accumulating 184.94 GB of data and 172,445,929 rows of data. We have documented the creation, logging, and utilization of this database within this paper.
+To better understand these security and privacy implications, we have logged a year of network and power data from 16 IoT devices, accumulating 184.94 GB of data and 172,445,929 entries of data.
 
-From this database, we extracted a summed graph of multiple IoT devices' power usage. From just a one minute time window of this graph, we can to determine the model of the smart speaker in use, even with noise from various high power devices. We also found tradeoffs that smart speakers made between power and network usage.
-
-%It has shown us that there is a lot to learn about IoT devices from the network usage. However, there is also a lot to learn from power information. If its possible to classify a device in use from just the power, with some noise, it is possible someone could figure out what is going on in a household from just monitoring their powerline. We intend to increase interest in the analysis of these devices and provide an expansive database for other researchers to further understand IoT devices.
+With this dataset, we show that we can determine the smart speaker in use when viewing just one minute of power usage from multiple devices, even with noise from various high power devices.
