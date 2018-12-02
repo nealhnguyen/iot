@@ -140,6 +140,7 @@ Sniff.py runs a thread for power logging and a thread for network logging. As ea
 
 It begins by opening a socket on the wireless interfaces connected. All IP packets are sniffed through this socket connection as shown in listing \ref{lst:sock}.
 
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[label={lst:sock},caption={Open and Read from a Socket},captionpos=b]
 self.socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(ETH_P_ALL))
 self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
@@ -147,6 +148,7 @@ self.socket.bind((self.interface_name, ETH_P_ALL))
 while True:
     packet, address = self.socket.recvfrom(MTU)
 \end{lstlisting}
+\end{minipage}
 
 Once we have sniffed a packet, we can obtain the metadata from the hex dump. We preserve this hex dump because in case we would want to extract more information from it later on. From each hex dump, we extract and store the source IP, source host, destination IP, destination host, time, size, type, protocol, source port, destination port, source host, destination host, and hex dump. We will explain what each field in section \ref{Database}.
 
@@ -160,7 +162,8 @@ Once the script queries the Wemo for its power information, we relate the Wemo t
 
 One issue with PyWemo and the Belkin Wemos was that they would sometimes disconnect and the script would miss out on power data. To solve this issue, the script rescans for Wemos until it finds all 16 Wemos in our testbed. The rescan code for this is shown below in listing \ref{lst:wemoRescanCode}
 
-\begin{lstlisting}[label={lst:wemoRescanCode},caption={Rescan if all wemos not found.},captionpos=b]
+\begin{minipage}{\textwidth}
+\begin{lstlisting}[label={lst:wemoRescanCode},caption={Rescan if all wemos not found.}]
     def scan_until_all_found():
         print("Discovering Wemos")
         switches = pywemo.discover_devices()
@@ -175,7 +178,8 @@ One issue with PyWemo and the Belkin Wemos was that they would sometimes disconn
             print("Discovered {} switches".format(len(switches)))
 
         return switches
-    \end{lstlisting}
+\end{lstlisting}
+\end{minipage}
 
 \subsection{Database}
 \label{Database}
@@ -307,7 +311,7 @@ The following subsections explains the script created to automate the event logg
 Logging information into the spreadsheet is a tedious task, especially when trying to analyze each device while running tasks on them. The code for the script is shown below in Listing~\ref{lst:sheetScript}.
 
 \begin{minipage}{\textwidth}
-\begin{lstlisting}[basicstyle=\linespread{0.8}\footnotesize, language=C,label={lst:sheetScript},caption={Open and Read from a Socket},captionpos=b]
+\begin{lstlisting}[basicstyle=\linespread{0.95}\ttfamily, language=C,label={lst:sheetScript},caption={Open and Read from a Socket}]
 function onEdit() {
   var s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Event Log");
   var r = s.getActiveCell();
@@ -368,13 +372,13 @@ Whenever interfacing with this device, we used the device under the app NVAS2 in
 \subsection{realtimeIoTGrapher.py}
 \label{realtimeIoTGrapher.py}
 
-In this section, we will talk about further automation when researching Network and Power patterns. When analyzing the power and network for a particular device, we can only see so much when looking straight at the database entries. Even when filtering by device or time, we can only catch text but cannot visualize any patterns. To resolve this, we graphed the data into Google Sheets and graphed it. Seeing a graph made analysis and detection of patterns much easier. The tables and formulas are shown in figure\ref{fig:excelLogging}. This process was tedious and time-consuming. We had to copy the data over after making a sequel query, extract unique time columns, then sum the size up at each unique time frame. So we looked to optimize it.
+This section covers a visual tool I created to look for trends. We initially graphed the data into Google Sheets and graphed it. The tables and formulas are shown in figure \ref{fig:excelLogging}. This process was tedious and time-consuming. We had to copy the data over after making a SQL query, extract unique time values, and then get the total network and power usage at each time interval.
 
-The result was the realtimeIoTgrapher. This python script would automatically form the graphs shown in figure \ref{fig:tvThroughput} when given the time range and the devices. This automation sped up the analysis process and provided extra features which we will explain in section \ref{Features}.
+To address these problems, I created a python script that automatically forms graphs, including the one shown in figure \ref{fig:interpolated} when given the time range and the devices. This automation sped up the analysis process and provided extra features covered in section \ref{Features}.
 
-This python script leveraged the Plotly library, which, given data, will graph it onto a local web page for viewing. It comes with many useful tools for further analysis and can be extended to run on a public web page for public viewing.
+This Python script leverages the Plotly library, which, given data, will graph it onto a local web page for viewing. Plotly comes with many useful tools for further analysis and can be extended to run on a public web page for public viewing.
 
-When we release this database to the public, we hope to complement it with this software so that researchers view the power and network information of any/all of the devices at a glance. At which point, we can set up a public website to host this software so that anyone can view the data at any time.
+I plan to distribute this out with our database so that researchers can view the power and network information of any device at a glance.
 
 \begin{figure}[H]
     \centering
@@ -393,50 +397,62 @@ When we release this database to the public, we hope to complement it with this 
 \subsubsection{Features}
 \label{Features}
 
-In this section, we will discuss the features that this RealTimeIoTGrapher (grapher) provides.
+This section, discusses the features that RealTimeIoTGrapher (grapher) provides.
 
-Firstly, at its core, this program automates the creation of the graph shown in figure \ref{fig:tvThroughput}. However, now, instead, we can specify a time range that the graph should be in, then we specify what devices we want to graph, and then the program will create the graph. It will show the power, input traffic, output network traffic, and the total network traffic over the time range specified as a line graph. The grapher will do this for all the devices specified.
+At its core, this program automates the creation of the graph shown in figure \ref{fig:tvThroughput}. The user can specify a time range that the graph should cover and what devices to graph. By default the graph shows power, input traffic, output traffic, and total network traffic over the time range specified.
 
-On top of this core information, the grapher will also annotate the data by including a line denoting the average for each of the traces above over the time range that is currently displayed. It will also annotate the maximum and minimum values in the time range for each trace. Also, instead of a set time range, the grapher can also display this information in real time for an interval amount of time, updating every second.
+The grapher also annotates the data by including a line denoting the average for each of the traces over the time range currently displayed. It also annotates the maximum and minimum values in the time range for each trace. The grapher can also display information in real time for an user settable interval amount of time, updating every second.
 
-The Plotly libraries also provide useful tools when displaying these IoT graphs. It is possible to zoom in and out the displayed graph, select specific traces for viewing, save the graph, and hover over data points to display the specific value. Finally, Plotly also provides a save feature that allows further editing of the graph so that it is formatted the way the user wants. There are many other features that the Plotly libraries provide, but these are the main ones used in our research.
+The Plotly libraries also provide useful tools when displaying these IoT graphs. It is possible to zoom in and out the displayed graph, select specific traces for viewing, save the graph, and hover over data points to display the specific value. Finally, once a graph is saved Plotly allows further editing of the graph so that it is formatted the way the user wants.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/rollup.png}
-    \caption{Efficient SQL query to obtain total Network throughput at each second}
-    \label{fig:rollup}
-\end{figure}
+\begin{minipage}{\textwidth}
+    \begin{lstlisting}[language=SQL, label={lst:rollup},caption={Efficient SQL query to obtain total Network throughput at each second.}]
+    def throughput_query_in_range(db_connection, device, start_time, end_time):
+    sql_query = """
+        SELECT
+            time,
+            CASE WHEN type IS NULL THEN 'total' ELSE type END type,
+            SUM(size) AS total_throughput
+        FROM ip_log.ip
+        WHERE
+            time BETWEEN '%s' AND '%s' AND
+            (source = '%s' OR destination = '%s')
+        GROUP BY time, type WITH ROLLUP;
+    """ % (start_time, end_time, ip[device], ip[device])
 
-To reduce local computation, the grapher offloads work to the server through the SQL query. When querying for network data, it will perform a rollup in order to sum up the incoming and outcoming network throughput to obtain the total throughput. This roll-up query can is formatted as shown in \ref{fig:rollup}.
+    dataframe = pd.read_sql_query(sql_query, db_connection)
+
+    return dataframe
+    \end{lstlisting}
+\end{minipage}
+
+To reduce local computation, the grapher offloads work to the server through a SQL query. When querying for network data, it performs a SQL ROLLUP in order to sum the incoming and outgoing network throughput to obtain the total throughput. ROLLUP is required because it provides nested queries and causes the query to sum up the data by time for each type of packet. This query is formatted as shown in listing \ref{lst:rollup}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figures/noninterpolated.png}
-    \caption{Summed up power trace without interpolation.}
+    \caption{Summed power traces without interpolation.}
     \label{fig:noninterpolated}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figures/interpolated.png}
-    \caption{Summed up power trace graph with interpolation.}
+    \caption{Summed power traces with interpolation.}
     \label{fig:interpolated}
 \end{figure}
 
-The grapher can also sum up all power traces into one single trace. Originally, when summing the graphs, it would add up the two Pandas data frames that are representing each trace and then graph that resultant trace, shown in figure \ref{fig:noninterpolated}. However, the Wemo doesn't always sample at every second. This is an issue if, at some second in time T, some device X has a power point, but the other device Y does not. The summation will count the empty data point in device Y at T as 0 and take device X's data point as the sum. Device Y does not use 0 power at time T but doesn't have a data point for that time. So to solve this, we interpolated data for every second for each device before summing their data frames up, with a builtin Pandas feature. After using interpolation, the same time summed graph looks like figure \ref{fig:interpolated}. It is now much more accurate.
+The grapher can also sum up all power traces into one single trace. Originally, when summing the graphs, it would add the two Pandas \cite{pandas} data frames that represent each trace, and graph the result, shown in figure \ref{fig:noninterpolated}. Pandas is a Python library that represents a multidimensional array as a table, providing useful methods for manipulating the dataset. However, the Wemo doesn't always sample every second. This is an issue if, at time, one device X has a power point, but another device does not. The summation will count the empty data point as 0, resulting in an erroneous sum. This was solved by interpolating data for every second for each device before summing data frames, with a builtin Pandas feature. Interpolation is shown in \ref{fig:interpolated} as a graph.
 
-\subsubsection{Why It is Useful}
-As stated before, this tool is meant to be released as a complementary tool to our database. It has already been used by multiple researchers when interfacing with our database.
+\subsubsection{Visual Takeaway}
+This tool created most of the images shown in section \ref{Results}. A few other researchers such as Frawley's have used this tool for data visualization. The grapher provides real-time or historical graphs on any in the database device for individual analysis or comparison with little effort or time. Additional features from Plotly also provides an easy way to format graphs for presentations or papers.
 
-The realTimeIoTGrapher will helps analysis of the database at a glance and gives insight into each device in relation to the event log.  This tool created most of the images shown in section \ref{Results}. Many other researchers have used this tool as well to gain a surface understanding of the database. The grapher provides real-time or historical graphs on any device for individual analysis or comparison with little effort or time. Additional features from Plotly also provides an easy way to format the graph for presentations or papers.
-
-The summation feature can simplify the graph and provide a more holistic view of power usage as a whole, making it easier to spot patterns. In this paper, the feature is also used to simulate the concept of a household's ``powerline'' where all energy usage would be summed up into one power meter.
+The summation feature can simplify the graph and provide a more holistic view of power usage, making it easier to spot patterns. In this paper, the summation feature is used to simulate the concept of a household's ``powerline'' where all energy usage would be summed up into one power meter.
 
 \subsubsection{Limitations}
-As this tool was created entirely for research purposes in a constrained time frame, there are some edge cases that it fails to handle.
+As this tool was created entirely for research purposes, there are some edge cases that it fails to handle.
 
-Every once in a while, since so many people are reading from the database, the database will have too many connections, at this point, the software will refuse to connect, and the grapher will not work.
+Occassionally the database will have too many connections, at this point, the software will refuse to connect, and the grapher will not work. When graphing in real time, the grapher makes a new connection for each query. If a query fails, connections can quickly build up.
 
 The graphing tool also gets much slower when the time frame requested is much larger. We have noticed a slow down for queries in time frames longer than 7 hours. In the static graphing mode, it will slow down before graphing the information. However, in real time graphing mode, the tool will make many slow queries, eventually causing too many connections to the database and undefined behavior.
 
