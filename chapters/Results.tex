@@ -1,10 +1,10 @@
 \chapter{Results}
 \label{Results}
-In this section, we will go over the data set we have built from our IoT test bed and present graphs from that data set. This section will start with the effects of changing the smart plug that the device connects to. Then the paper will cover the protocol spread over the whole database. The next two subsections will cover smart speakers and streaming devices specifically. Then the paper will sum power graphs and conclude with a comparison between smart speakers.
+In this chapter, we go over the data set we have built from our IoT test bed and present graphs from that data set. This chapter starts with the effects of changing the smart plug that the device connects to in section \ref{swappingSwitch}. Then section \ref{wholeDB} covers the protocol spread over the whole database. The next two subsections \ref{Smart Speakers} and \ref{Streaming Devices} covers smart speakers and streaming devices while idle, in use, and during first boot, including other intersting results if any. Sections \ref{sumPowerGraph} and\ref{sumPowerGraphWithNoise} covers the summed power graphs that simulate a shared powerline with and without noise. Finally this chapter concludes with a comparison between smart speakers in section \ref{smartSpeakerComparisonSection}.
 
-Sections \ref{Whole Database}, \ref{smartSpeakerResults}, and \ref{Streaming Devices} have already been covered in Ryan Frawley's paper\cite{frawley_2018} so those results will be paraphrased. His paper will have a more in-depth analysis in those sections and include GeoIP information that will highlight the spread of locations the database and each device communicates with the most.
+Sections \ref{Whole Database}, \ref{smartSpeakerResults}, and \ref{Streaming Devices} are covered in Ryan Frawley's paper\cite{frawley_2018} and are paraphrased with no further discussion in section \ref{Discussion}. Frawley's paper contains a more in-depth analysis in those sections and include GeoIP information that highlights the spread of locations the database and each device communicates with the most.
 
-When obtaining data, most of the packets are encrypted, so the data we present will focus on metadata such as size, protocol, source IP, dest IP. For power analysis, we only use the power used at each second.
+When obtaining data, most of the packets are encrypted, so the data we present focuses on metadata such as size, protocol, source IP, dest IP. For power analysis, we only use the power used at each second.
 
 \section{Swapping the Power Switch}
 \label{swappingSwitch}
@@ -65,7 +65,7 @@ One interesting finding from the Echo Dot is that it has a light monitor. When w
 \section{Streaming Devices}
 \label{Streaming Devices}
 
-Each subsection will show the streaming devices usage during startup and when streaming.
+Each subsection shows the streaming devices usage during startup and when streaming.
 
 \subsection{Google Chrome Cast}
 \begin{figure}[H]
@@ -127,7 +127,7 @@ When streaming, the Roku's power usage and network throughput rise and stay at a
 
 \section{Summed Power Graph}
 \label{sumPowerGraph}
-In this section, we will show graphs of the five smart speakers summed up as one graph of power usage. The devices used includes two echo dots, 2 Eufy genies, and 1 Google chrome cast.
+In this section, we show graphs of the five smart speakers summed up as one graph of power usage. The devices used includes two echo dots, 2 Eufy genies, and 1 Google chrome cast.
 
 \begin{figure}[H]
   \centering
@@ -146,7 +146,7 @@ The first graph \ref{fig:weatherSum} is shown in a time frame where each device 
   \label{fig:mixedNewsSum}
 \end{figure}
 
-The next graph \ref{fig:mixedNewsSum} shows the smart speakers when asked for the news. We asked each device for the news at random as to prevent any optimizations. This graph and the rest of the summed graphs in this section will use the same notation for signifying commands. 2 corresponding dots of the same color will signify the start and end of the command for a specific device. If the dots are on another level, then this command has been repeated another time.
+The next graph \ref{fig:mixedNewsSum} shows the smart speakers when asked for the news. We asked each device for the news at random as to prevent any optimizations. This graph and the rest of the summed graphs in this section use the same notation for signifying commands. Two corresponding dots of the same color signify the start and end of the command for a specific device. If the dots are on another level, then this command has been repeated another time.
 
 In this graph, all devices have a spike at the beginning and end of the command and maintain a steady energy usage in between that is slightly higher than the idle energy used. The peak to peak spike of the Eufy Genie is the smallest at 350 mW, then the Google Home at 500 mW, and finally the Echo Dot at 1900 mW.
 
@@ -162,7 +162,7 @@ The next graph \ref{fig:bestBballSum} shows the smart speakers when asked for th
 
 However, when looking at graph \ref{fig:bestBballSum}, there is a power spike that is unaccounted for in correspondence to the event log. We made a query, invoking all other power spikes but we did not do anything for the power spike at 18:12 that is higher than the other Eufy power spikes.
 
-To figure what the power spike at 18:12 is, we separated the graphs into individual power traces as shown in figure \ref{fig:bestBballSeperate}. From the graph, the power spike at 18:12 is attributed to the Echo Dot 2. We then looked at the individual network usage for each of these devices in this time frame as shown in figure \ref{fig:bestBballNetwork}. At 18:12, there is no significant network usage. We had no conclusive evidence to decide what the power spike is accounted to, but we will speculate what we think it was in section \ref{Discussion}.
+To figure what the power spike at 18:12 is, we separated the graphs into individual power traces as shown in figure \ref{fig:bestBballSeperate}. From the graph, the power spike at 18:12 is attributed to the Echo Dot 2. We then looked at the individual network usage for each of these devices in this time frame as shown in figure \ref{fig:bestBballNetwork}. At 18:12, there is no significant network usage. We had no conclusive evidence to decide what the power spike is accounted to, but section \ref{Discussion} covers some speculated reasons.
 
 \begin{figure}[H]
   \centering
@@ -189,16 +189,16 @@ The power spike information for each query type (``what's the weather'' ``what's
 \end{figure}
 
 \section{Summed Power Graph With Noise}
-\label{sumPowerGraphSection}
+\label{sumPowerGraphWithNoise}
 In this section, we introduce noise into the system so that we can determine if the power spike from each smart speaker is still discernible within a summed power graph when we add high power devices.
 
-In each subsection, there will be three traces. The first trace (blue trace) will be the power usage over time for a high power device. We will swap this trace out with various devices. The second trace (green trace) is the summed power usage of our five smart speakers (2 Echo Dots, 2 Eufy Genies, 1 Google Home). For this second trace, we used the same power usage graph as figure \ref{fig:bestBballSum} for every graph in the subsections below. Using the same graph provides our control for each smart speakers power spike. The third trace (yellow trace) is the sum of both trace 1 and 2. It is the power usage of the smart speakers in the green trace with the noise from the device in the blue trace.
+In each subsection, there are three traces. The first trace (blue trace) is the power usage over time for a high power device. This trace maps to various devices as we switch them out. The second trace (green trace) is the summed power usage of our five smart speakers (2 Echo Dots, 2 Eufy Genies, 1 Google Home). For this second trace, we used the same power usage graph as figure \ref{fig:bestBballSum} for every graph in the subsections below. Using the same graph provides our control for each smart speakers power spike. The third trace (yellow trace) is the sum of both trace 1 and 2. It is the power usage of the smart speakers in the green trace with the noise from the device in the blue trace.
 
-In all these graphs there will be two y-axes which will represent the power (mW) used by a device at that time. The graphs have two y-axes so that the traces can be more zoomed in. Usually, one trace is significantly larger than the other, so if they are on the same scale, the other gets compressed. The trace for the high power device (blue) will always in reference to the first y-axis on the left side. The trace for the smart speakers (green) will always in reference to the second y-axis on the right side. The sum of the two traces (yellow trace) will about the axis that it is closer into magnitude. The graph will state which traces are using the axis in the axis title. Also note that to further zoom in on the graphs, the y-axes will not always start at 0.
+In all these graphs there are be two y-axes which represent the power (mW) used by a device at that time. The graphs have two y-axes so that the traces can be more zoomed in. Usually, one trace is significantly larger than the other, so if they are on the same scale, the other gets compressed. The trace for the high power device (blue) is always in reference to the first y-axis on the left side. The trace for the smart speakers (green) is always in reference to the second y-axis on the right side. The sum of the two traces (yellow trace) is in reference to the y-axis that it is closer into magnitude. Note that to further zoom in on the graphs, the y-axes do not start at 0.
 
 The x-axes in these graphs are also not actual time stamps. The x-axis is the time elapsed (s) from when the green smart speaker trace (green) \ref{fig:bestBballSum} began. Because we had already recorded the smart speaker trace (green), we recorded each high power appliance trace (blue) individually and included it on the same time range.
 
-Below, we will display the smart speaker trace with a PC (Intel NUC), fan, refrigerator, or microwave. We do this while these devices are idle and in use.
+Below, we display the smart speaker trace with a PC (Intel NUC), fan, refrigerator, or microwave. We do this while these devices are idle and in use.
 
 \begin{figure}[H]
   \centering
@@ -251,7 +251,7 @@ Below, we will display the smart speaker trace with a PC (Intel NUC), fan, refri
 
 \section{Smart Speaker Comparison}
 \label{smartSpeakerComparisonSection}
-From the figures in section \ref{sumPowerGraph}, the Echo Dot uses a lot more energy than the other smart speakers. Because of that, we wanted to compare the energy and network usages of the three smart speakers individually so that we can determine trade-offs that they make.
+The figures in section \ref{sumPowerGraph} show that the Echo Dot uses a lot more energy than the other smart speakers. Because of that, we wanted to compare the energy and network usages of the three smart speakers individually so that we can determine trade-offs that they make.
 
 In the graphs below, we display power and network traces for the echo dot 1, Eufy genie 1, and Google home. We used the same time frame as the graph in figure \ref{fig:bestBballSeperate} for the two graphs below. We removed the second Echo Dot and Eufy Genie for simplicity.
 

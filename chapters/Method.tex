@@ -1,10 +1,15 @@
 \chapter{Method}
 \label{Method}
-The flow diagram in figure \ref{fig:network} outlines the IoT test bed constructed for this project. IoT devices pull power from the outlets through the smart switches, which log the power usage, and the WAP will query the smart switches for that data and pushes it to an AWS (Amazon Web Services)\cite{rds} MySQL\cite{mysql} database as an entry in the `power' table.
+To log and analyze network and power usage for our IoT devices, we set up an IoT testbed to log this data to our database. This chapter documents the setup process for each IoT device, the logging process, and the software created to analyze the logged data.
+
+\section{IoT Testbed Overview}
+When referring to our IoT testbed, we refer to the IoT devices, any connected hardware to log the power data, and the database where all the data is stored.
+
+The flow diagram in figure \ref{fig:network} outlines the IoT test bed constructed for this project. IoT devices pull power from the outlets through the smart switches, which log the power usage, and the WAP queries the smart switches for that data and pushes it to an AWS (Amazon Web Services)\cite{rds} MySQL\cite{mysql} database as an entry in the `power' table.
 
 The wireless net provided through the WAP intercepts network packets of devices connected to it (IoT devices in testbed), parses them into power and network entries, and pushes them to the database. Finally, for analysis, a python script called realTimeGrapher.py pulls from the database and graphs this data in real time or from set intervals in the past.
 
-Section \ref{Physical Layout and Setup} discuss what devices we used, the setup of each device, and the physical layout of the IoT test bed. Section \ref{software} will go over the software part of the IoT test bed. It covers the usage flow of this test bed and what was done to obtain results for analysis.
+Section \ref{Physical Layout and Setup} discusses what devices we used, the setup of each device, and the physical layout of the IoT test bed. Section \ref{software} goes over the software part of the IoT test bed. It covers the usage flow of this test bed and what was done to obtain results for analysis.
 
 \begin{figure}[H]
     \centering
@@ -151,7 +156,7 @@ while True:
 \end{lstlisting}
 \end{minipage}
 
-Once we have sniffed a packet, we can obtain the metadata from the hex dump. We preserve this hex dump because in case we would want to extract more information from it later. From each hex dump, we extract and store the source IP, source host, destination IP, destination host, time, size, type, protocol, source port, destination port, source host, destination host, and hex dump. We will explain what each field in section \ref{Database}.
+Once we have sniffed a packet, we can obtain the metadata from the hex dump. We preserve this hex dump because in case we would want to extract more information from it later. From each hex dump, we extract and store the source IP, source host, destination IP, destination host, time, size, type, protocol, source port, destination port, source host, destination host, and hex dump. We explain what each field in section \ref{Database}.
 
 \subsubsection{Power Logging}
 
@@ -379,7 +384,7 @@ This section covers a visual tool I created to look for trends. We initially gra
 
 To address these problems, I created a python script that automatically forms graphs, including the one shown in figure \ref{fig:interpolated} when given the time range and the devices. This automation sped up the analysis process and provided extra features covered in section \ref{Features}.
 
-This Python script leverages the Plotly library, which, given data, will graph it onto a local web page for viewing. Plotly comes with many useful tools for further analysis and can be extended to run on a public web page for public viewing.
+This Python script leverages the Plotly library, which, given data, graphs it onto a local web page for viewing. Plotly comes with many useful tools for further analysis and can be extended to run on a public web page for public viewing.
 
 I plan to distribute this out with our database so that researchers can view the power and network information of any device at a glance.
 
@@ -446,7 +451,7 @@ To reduce local computation, the grapher offloads work to the server through a S
     \label{fig:interpolated}
 \end{figure}
 
-The grapher can also sum up all power traces into one single trace. Originally, when summing the graphs, it would add the two Pandas \cite{pandas} data frames that represent each trace, and graph the result, shown in figure \ref{fig:noninterpolated}. Pandas is a Python library that represents a multidimensional array as a table, providing useful methods for manipulating the dataset. However, the WeMo does not always sample every second. This is an issue if, at time, one device X has a power point, but another device does not. The summation will count the empty data point as 0, resulting in an erroneous sum. This was solved by interpolating data for every second for each device before summing data frames, with a built-in Pandas feature. Interpolation is shown in \ref{fig:interpolated} as a graph.
+The grapher can also sum up all power traces into one single trace. Originally, when summing the graphs, it would add the two Pandas \cite{pandas} data frames that represent each trace, and graph the result, shown in figure \ref{fig:noninterpolated}. Pandas is a Python library that represents a multidimensional array as a table, providing useful methods for manipulating the dataset. However, the WeMo does not always sample every second. This is an issue if, at time, one device X has a power point, but another device does not. The summation counts the empty data point as 0, resulting in an erroneous sum. This was solved by interpolating data for every second for each device before summing data frames, with a built-in Pandas feature. Interpolation is shown in \ref{fig:interpolated} as a graph.
 
 \subsubsection{Visual Takeaway}
 This tool created most of the images shown in section \ref{Results}. A few other researchers such as Frawley's have used this tool for data visualization. The grapher provides real-time or historical graphs on any in the database device for individual analysis or comparison with little effort or time. Additional features from Plotly also provides an easy way to format graphs for presentations or papers.
@@ -456,9 +461,9 @@ The summation feature can simplify the graph and provide a more holistic view of
 \subsubsection{Limitations}
 As this tool was created entirely for research purposes, there are some edge cases that it fails to handle.
 
-When the database has too many connections, the software will refuse to connect, and the grapher will not work. When graphing in real time, the grapher makes a new connection for each query. If a query fails, connections can quickly build up.
+When the database has too many connections, the software refuses to connect, and the grapher will not work. When graphing in real time, the grapher makes a new connection for each query. If a query fails, connections can quickly build up.
 
-The graphing tool also slows as the time frame requested increases. We have noticed a slow down for queries with time frames longer than seven hours. In the static graphing mode, the tool slows down before graphing the information. However, in real time graphing mode, the tool will make many slow queries, eventually causing too many connections to the database and undefined behavior.
+The graphing tool also slows as the time frame requested increases. We have noticed a slow down for queries with time frames longer than seven hours. In the static graphing mode, the tool slows down before graphing the information. However, in real time graphing mode, the tool makes many slow queries, eventually causing too many connections to the database and undefined behavior.
 
 The graphing tool uses a lookup table that maps the IP address of the device to the corresponding name given to the WeMos. Because we manually create the lookup table, when any of these fields change, the graphing is not able to find the device. In some cases, this causes the graphing tool to crash. To solve this, the user must manually change the IP addresses defined in the lookup table in lines 23-39 shown in listing \ref{lst:ipLookup} below.
 
