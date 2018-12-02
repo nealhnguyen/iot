@@ -3,7 +3,7 @@
 To log and analyze network and power usage for our IoT devices, we set up an IoT testbed to log this data to our database. This chapter documents the setup process for each IoT device, the logging process, and the software created to analyze the logged data.
 
 \section{IoT Testbed Overview}
-When referring to our IoT testbed, we refer to the IoT devices, any connected hardware to log the power data, and the database where all the data is stored.
+When referring to our IoT testbed, we refer to the IoT devices and any connected hardware to log the power data.
 
 The flow diagram in figure \ref{fig:network} outlines the IoT test bed constructed for this project. IoT devices pull power from the outlets through the smart switches, which log the power usage, and the WAP queries the smart switches for that data and pushes it to an AWS (Amazon Web Services)\cite{rds} MySQL\cite{mysql} database as an entry in the `power' table.
 
@@ -14,7 +14,7 @@ Section \ref{Physical Layout and Setup} discusses what devices we used, the setu
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{networkDiagram}
-    \caption{Network Diagram}
+    \caption{IoT testbed.}
     \label{fig:network}
 \end{figure}
 

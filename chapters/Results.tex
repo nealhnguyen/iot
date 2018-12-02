@@ -1,15 +1,14 @@
 \chapter{Results}
 \label{Results}
-In this chapter, we go over the data set we have built from our IoT test bed and present graphs from that data set. This chapter starts with the effects of changing the smart plug that the device connects to in section \ref{swappingSwitch}. Then section \ref{wholeDB} covers the protocol spread over the whole database. The next two subsections \ref{Smart Speakers} and \ref{Streaming Devices} covers smart speakers and streaming devices while idle, in use, and during first boot, including other intersting results if any. Sections \ref{sumPowerGraph} and\ref{sumPowerGraphWithNoise} covers the summed power graphs that simulate a shared powerline with and without noise. Finally this chapter concludes with a comparison between smart speakers in section \ref{smartSpeakerComparisonSection}.
+This chapter covers different network and power usage patterns for the IoT devices. This chapter starts with the effects of changing the smart plug that the device connects to in section \ref{swappingSwitch}. Then section \ref{wholeDB} covers the protocol spread over the whole database. The next two subsections \ref{smartSpeakerComparisonSection} and \ref{Streaming Devices} covers smart speakers and streaming devices while idle, in use, and during first boot, including other intersting results if any. Sections \ref{sumPowerGraph} and\ref{sumPowerGraphWithNoise} covers the summed power graphs that simulate a shared powerline with and without noise. Finally this chapter concludes with a comparison between smart speakers in section \ref{smartSpeakerComparisonSection}.
 
-Sections \ref{Whole Database}, \ref{smartSpeakerResults}, and \ref{Streaming Devices} are covered in Ryan Frawley's paper\cite{frawley_2018} and are paraphrased with no further discussion in section \ref{Discussion}. Frawley's paper contains a more in-depth analysis in those sections and include GeoIP information that highlights the spread of locations the database and each device communicates with the most.
+Sections \ref{Whole Database}, \ref{smartSpeakerResults}, and \ref{Streaming Devices} are covered in Ryan Frawley's paper~\cite{frawley_2018} and are paraphrased with no further discussion in section \ref{Discussion}. Frawley's paper contains a more in-depth analysis in those sections and include GeoIP information that highlights the spread of locations the database and each device communicates with the most.
 
 When obtaining data, most of the packets are encrypted, so the data we present focuses on metadata such as size, protocol, source IP, dest IP. For power analysis, we only use the power used at each second.
 
 \section{Swapping the Power Switch}
 \label{swappingSwitch}
-We wanted to check if the smart switches were consistent between devices. To do so, we swapped various devices with various power switches and checked to see if the idle power was still the same. After doing so multiple times with various devices, we found no change when swapping the switches. One example is shown in figure  \ref{fig:switchEchoEufyPlug} where we plugged the Echo Dot 1 into the Eufy
-Genie 1's corresponding Wemo smart switch and vice versa. After starting restarting up from power on, the Eufy Genie's power reads the same as the Echo Dot had previously read and vice versa.
+To check if the smart switches were consistent between devices we swapped various devices with various power switches. After WeMo swaps with various devices, no significant change was found when swapping the switches. One example is shown in figure \ref{fig:switchEchoEufyPlug} where we swapped the Echo Dot 1 and Eufy Genie 1s' corresponding Wemo smart switch. After starting restarting, the Eufy Genie's power reads the same as the Echo Dot had previously read.
 
 \begin{figure}[H]
     \centering
@@ -20,7 +19,7 @@ Genie 1's corresponding Wemo smart switch and vice versa. After starting restart
 
 \section{Whole Database}
 \label{wholeDB}
-When examining the whole database, most of the traffic goes through TCP so that communication can be more reliable. Then UDP comes next as it is beneficial for streaming and communication services, then finally IGMP and everything else. The spread of protocols can be shown in figure \ref{fig:tcpudp}.
+When examining the whole database, most of the traffic is TCP packets. The second most significant protocol is UDP. The spread of protocols can be shown in figure \ref{fig:tcpudp}.
 
 \label{Whole Database}
 \begin{figure}[H]
@@ -32,8 +31,10 @@ When examining the whole database, most of the traffic goes through TCP so that 
 
 \section{Smart Speakers}
 \label{smartSpeakerResults}
+This section will cover the smart speaker's power and network usage in different scenarios.
+
 \subsection{Google Home Mini}
-The Google home mini's idle traffic broadcasts SSDP (Simple Service Discovery Protocol) packets once every minute. The SSDP packets are a discovery request packet for every IoT device on the network that supports UPnP (Universal Plug and Play). At which point devices such as the Echo Dot, Samsung TV, streaming devices, and the Chromebook would respond with information about themselves in a .xml file. This XML file contains details regarding the device operating system and more. Google also sends encrypted TCP packets to Google every 10 minutes. The Google Home Mini's idle traffic is shown in figure \ref{fig:home}. The high peaks are the encrypted TCP packets, and the smaller spikes are the SSDP/UPnP packets.
+The Google Home Mini's idle traffic broadcasts SSDP (Simple Service Discovery Protocol) packets once every minute. The SSDP packets are a discovery request packet for every IoT device on the network that supports UPnP (Universal Plug and Play). At which point devices such as the Echo Dot, Samsung TV, streaming devices, and the Chromebook respond with information about themselves in a .xml file. This XML file contains details regarding the device operating system and more. Google also sends encrypted TCP packets to Google every 10 minutes. The Google Home Mini's idle traffic is shown in figure \ref{fig:home}. The high peaks are the encrypted TCP packets, and the smaller spikes are the SSDP/UPnP packets.
 
 \begin{figure}[H]
   \centering
@@ -53,7 +54,7 @@ A graph of the Google Home Mini is shown in the figure \ref{fig:homequery}. The 
 
 \subsection{Echo Dot}
 
-One interesting finding from the Echo Dot is that it has a light monitor. When we turn on the lights, the LEDs on the Echo Dot brightens to adapt. The brightness change causes the Echo Dot to use more idle power as shown in figure \ref{fig:echolights}.
+One interesting finding from the Echo Dot is that it has a light monitor. When turning on the lights, the LEDs on the Echo Dot brighten to adapt. The brightness change causes the Echo Dot to use more idle power as shown in figure \ref{fig:echolights}.
 
 \begin{figure}[H]
   \centering
@@ -136,7 +137,7 @@ In this section, we show graphs of the five smart speakers summed up as one grap
   \label{fig:weatherSum}
 \end{figure}
 
-The first graph \ref{fig:weatherSum} is shown in a time frame where each device is unmuted and muted for a period. We wanted to see if muting and unmuting the devices changed anything. In this graph, there are changes, but they do not correlate to the muting/unmuting. We did this a few more times and found that most of the time, the power usage stayed the same. Then we queried each smart speaker for the weather while all other smart speakers were muted at the 18:30 mark. We queried each device in order 3-4 times in consecutive order so that it is easy to see and to check for consistent results. The Eufy had the smallest spike for this command at 400 mW, then the google home at 600 mW, and finally the echo dot at 2000 mW.
+The first graph in figiure \ref{fig:weatherSum} is shown in a time frame where each device was unmuted and muted for a period. This shows if muting and unmuting the devices affected anything. In this graph, there are changes on the first runthrough, but when repeating the process nothing happens. Further runthroughs show that the power usage stayed the same. In the last half of the graph we queried each smart speaker for the weather while all other smart speakers were muted at the 18:30 mark. We queried each device in order 3-4 times in consecutive order so that it is easy to see and to check for consistent results. The Eufy had the smallest spike for this command at 400 mW, then the google home at 600 mW, and finally the echo dot at 2000 mW.
 
 \begin{figure}[H]
   \centering
@@ -146,7 +147,7 @@ The first graph \ref{fig:weatherSum} is shown in a time frame where each device 
   \label{fig:mixedNewsSum}
 \end{figure}
 
-The next graph \ref{fig:mixedNewsSum} shows the smart speakers when asked for the news. We asked each device for the news at random as to prevent any optimizations. This graph and the rest of the summed graphs in this section use the same notation for signifying commands. Two corresponding dots of the same color signify the start and end of the command for a specific device. If the dots are on another level, then this command has been repeated another time.
+The next graph \ref{fig:mixedNewsSum} shows the smart speakers power usage when asked for the news. Each speaker was asked for the news at random as to prevent any optimizations. This graph and the rest of the summed graphs in this section use the same notation for signifying commands. Two corresponding dots of the same color signify the start and end of the command for a specific device. If the dots are on another level, then this command has been repeated another time.
 
 In this graph, all devices have a spike at the beginning and end of the command and maintain a steady energy usage in between that is slightly higher than the idle energy used. The peak to peak spike of the Eufy Genie is the smallest at 350 mW, then the Google Home at 500 mW, and finally the Echo Dot at 1900 mW.
 
@@ -251,7 +252,7 @@ Below, we display the smart speaker trace with a PC (Intel NUC), fan, refrigerat
 
 \section{Smart Speaker Comparison}
 \label{smartSpeakerComparisonSection}
-The figures in section \ref{sumPowerGraph} show that the Echo Dot uses a lot more energy than the other smart speakers. Because of that, we wanted to compare the energy and network usages of the three smart speakers individually so that we can determine trade-offs that they make.
+The figures in section \ref{sumPowerGraph} show that the Echo Dot uses a lot more energy than the other smart speakers. Because of this, we wanted to compare the energy and network usages of the three smart speakers individually so that we can determine trade-offs that they make.
 
 In the graphs below, we display power and network traces for the echo dot 1, Eufy genie 1, and Google home. We used the same time frame as the graph in figure \ref{fig:bestBballSeperate} for the two graphs below. We removed the second Echo Dot and Eufy Genie for simplicity.
 
