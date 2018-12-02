@@ -180,7 +180,7 @@ One issue with PyWemo and the Belkin Wemos was that they would sometimes disconn
 \subsection{Database}
 \label{Database}
 
-To store all the result of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space.
+To store all the result of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space. To interface with our database, we used a combination of the RealTimeIoTGrapher from section \ref{realtimeIoTGrapher.py}, Navicat \cite{navicat}, and mysql's commandline tool \cite{mysqlCommandline}.
 
 \subsubsection{Network Table}
 
@@ -207,7 +207,7 @@ The largest part of our database is the IP network table. This table contains al
     \label{tab:netcol}
     \end{table}
 
-Some common SQL commands we used for our analysis includes common queries shown in figures \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}. The most useful commands generally required examining total throughput or device throughput. The SQL query shown in \ref{fig:navicatRollup}.
+Common SQL commands we used for our analysis include those shown in listings \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}. The most useful commands generally required examining total throughput or device throughput using ROLLUP, shown in figure \ref{fig:navicatRollup}.
 
 \begin{figure}[H]
     \centering
@@ -216,13 +216,13 @@ Some common SQL commands we used for our analysis includes common queries shown 
     \label{fig:navicatRollup}
 \end{figure}
 
-The hex dump column drastically increases the size of each entry in the network table. However, as a raw network packet, it is very flexible and can be manipulated for many more use cases than the targeted columns we have. The hex dump contains the information of all the columns in the table and more. This flexibility is useful for other researchers who may have slightly different needs. As one of the original goals is to provide a database that other network researchers can use, the addition of the hex dump strongly hits that point
+The hex dump column drastically increases the size of each entry in the network table. However, as a raw network packet, it is very flexible and can be manipulated for many more use cases than the targeted columns we have. This flexibility is usefule for future research, that may require data we did not explicitly pull out for this project
 
-In the tables, each device can be tracked down by looking for the IP address of that device in the source or destination columns. However, note that during set up, we did not set up static IPs for these devices. Because of this, a single device can be under multiple IPs within the table. We ignored this issue until a query for a particular IP stopped working. At which point we would invoke a command on the device whose IP changed to flood the database with packets from that device, query the database in the time frame of the command, and obtain the new IP.
+In the database, each device can be tracked down by looking for the IP address of that device in the source or destination columns. However, note that during set up, we did not set up static IPs for these devices. Because of this, a single device can be under multiple IPs within the table. We ignored this issue until a query for a particular IP stopped working. At which point we would invoke a command on the device whose IP changed to flood the database with packets from that device, query the database in the time frame of the command, and obtain the new IP. We logged all devices and their current IP in a Google Sheets \cite{googleSheets} file covered in subsection\ref{Device Inventory}.
 
 \subsubsection{Power Table}
 
-The power table holds the most important data to this research, and we refer to it for the majority of the paper's findings. The size of this table is much smaller than the network table. It contains 5.84 GB of data and 61240189. The large difference in size between the IP table and power table is because each device only produces one entry power entry every second. The Power table is shown below in figure\ref {tab:powcol}.
+The power table holds the most important data for this portion of the research, and we refer to it for the majority of the paper's findings. The size of this table is much smaller than the network table. It contains 5.84 GB of data and 61,240,189 entries in the database. The large difference in size between the IP table and power table is because each device only produces one entry power entry every second. The columns of the power table are shown below in figure\ref{tab:powcol}.
 
 \begin{table}[H]
     \centering
@@ -240,30 +240,51 @@ The power table holds the most important data to this research, and we refer to 
     \label{tab:powcol}
     \end{table}
 
-When working with this database, we generally query for all the most recent power packets or a range of power packets in a given time range. We do this for either all devices, a subset of devices, or a single device. Some of the commands and results are shown below in figures \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}.
+When working with this database, we generally query for a range of power packets in a given time range. We do this for either all devices, a subset of devices, or a single device. Some of the commands and results are shown below in figures \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figures/navicatPowerQuery.png}
-    \caption{Power query form database with navicat.}
+    \caption{Power query from database with Navicat.}
     \label{fig:navicatPowerQuery}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figures/navicatNetworkQuery.png}
-    \caption{Network query form database with Navicat.}
+    \caption{Network query from database with Navicat.}
     \label{fig:navicatNetworkQuery}
 \end{figure}
-Within the power table, the name field is extracted from the name of the Wemo, which we manually name through the app. This can cause issues if the wrong device is connected to a Wemo. For example, the Echo Dot could've accidentally have been connected to the Wemo named Google home. There is no way to check for this besides manual examination, which we did after a few weeks, resetting all devices and causing a temporary void in power data in TIME RANGE. When we reset all devices, we also renamed some of the Wemos. For example, we changed ``echoDot'' to ``Echo Dot''. This way, all devices would follow the naming convention of separating words with spaces and capitalizing each word. A possible solution to this could've been to name the Wemo's by the IPs of the devices they connect to, but still, they are not static.
+Within the power table, the name field is extracted from the name of the Wemo, which we manually name through the app. This can cause issues if the wrong device is connected to a Wemo. For example, the Echo Dot could have accidentally been connected to the Wemo named Google Home. There is no way to check for this besides manual examination, which we did after a few weeks, resetting all devices and causing a temporary void in power data. When we reset all devices, we also renamed some of the Wemos. For example, we changed ``echoDot'' to ``Echo Dot''. This way, all devices would follow the naming convention of separating words with spaces and capitalizing each word. Another possible naming convention could have been to name the Wemo by the IPs of the devices they connect to, but they are not static.
 
-The sampling frequency for the power table is also low and missing some points. To handle missing points, interpolate points as shown in the \ref{realtimeIoTGrapher.py} section. There is nothing that can be done about the low sampling rate. This low sampling rate can cause some imprecise data through interpolation, some missing points may not have been a smooth change, drastic changes may have occurred that we may have missed.
+The sampling frequency for the power table is also low and missing some points. The script to query power data is not consistent and is unable to get power data at every second. To handle missing points, I interpolate them as shown in subsection \ref{realtimeIoTGrapher.py}. The interpolation process may introduce imprecise data as it fills a missing datapoint by extrapolating a linear path from the closest points before and after it.
+
+\subsection{Device Inventory}
+\label{Device Inventory}
+To keep track of all devices and important details about them, we log a device's service, distributor, related email, IP address, dependencies, previous usage, and password into a Google Sheets file. An example of entries into the Device Inventory are shown below in table \ref{tab:deviceInventory}. The service field denotes the service a device provides, for example, the Google Home is a smart speaker. The device field denotes the specific manufacturer and device name. The Email and password fields denotes the email and password used when setting up the device. Some devices such as the Nintendo Switch were setup without an account. The IP address field denotes the ip address of the device within our local network. The dependencies field denotes anything the device is connected to or uses. For example, the Roku express is connected to a Wemo for power logging and comes with a controller for use. The used flag denotes whether the device was previously used or not, at which point, we could not log first time startup data for that device.
+
+\begin{table}[H]
+    \centering
+    \caption{Device inventory excerpt. Password column not shown.}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{@{}lllllll@{}}
+        \toprule
+        Service      & Device            & Email                       & IP Address     & Dependencies     & Used \\ \midrule
+        Speaker      & Amazon Echo Dot 1 & amazonEchoDotSS0@aol.com    & 192.168.12.79  & wemo             & yes  \\
+        Speaker      & Google Home       & googleHomeMiniSS0@aol.com   & 192.168.12.48  & wemo             & no   \\
+        Streaming    & Google Chromecast & googleChromecastSD0@aol.com & 192.168.12.78  & wemo             & no   \\
+        Streaming    & Roku Express      & rokuExpressSD0@aol.com      & 192.168.12.68  & wemo, controller & no   \\
+        Game Console & Nintendo Switch   & n/a                         & 192.168.12.160 & wemo, controller & no   \\ \bottomrule
+        \end{tabular}}
+    \label{tab:deviceInventory}
+\end{table}
+
 
 \subsection{Usage Flow}
 
-As previously stated, one of the goals of this paper is to create a data set that represents the baseline of normal network traffic and power usage. To do this, we used each IoT device at least twice a week for the 20 weeks of this research. To build a proper dataset that other people could use for research, we set up a list of things that we should do for each device at a minimum when interfacing with it. While doing this, we would log what the activities into a Google Sheets file so that these events could be correlated to entries in the database, giving context when looking back on this data. For example, if someone were to look at the database and notice that the power and network traffic was high for 3 minutes, they could look at our logs and see that the device was streaming music for those 3 minutes and assume that it was normal usage.
+One of the goals of this work is to create a data set that represents the baseline of normal network traffic and power usage. To do this, we used each IoT device at least twice a week for the year length of this research. To build a proper dataset that other people could use for research, we set up a list of things that we should do for each device interfacing with it. We logged the activities into Google Sheets so that these events could be correlated to entries in the database, giving context when looking back on this data. For example, if someone were to look at the database and notice that the power and network traffic was high for 3 minutes, they could look at our logs and see that the device was streaming music for those 3 minutes and assume that it was normal usage.
 
-When logging events into the Google sheets, we include the start, end time, name of the device(s), action performed, and any individual notes. When naming the devices, we used the same naming as we did for the Wemos in order to maintain consistency and correlations from the log to the database. Because we manually enter entries through a Google sheet. An example of entries into the table is shown below in table\ref{tab:events}.
+When logging events into Google Sheets, we include the start, end time, name of the device(s), action performed, and any individual notes. When naming the devices, we used the same naming as we did for the Wemos in order to maintain consistency from the log to the database. An example of entries into the table is shown in Table \ref{tab:events}.
 
 \begin{table}[H]
     \centering
@@ -279,13 +300,14 @@ When logging events into the Google sheets, we include the start, end time, name
     \label{tab:events}
 \end{table}
 
-In the following subsections, we will explain the script created to automate the event logging portion of the research. Then we will follow up by explaining the specific procedure we ran each group of IoT devices through whenever we interfaced with them
+The following subsections explains the script created to automate the event logging portion of the research. Then it explains the specific procedure we ran each group of IoT devices through whenever we interfaced with them.
 
 \subsubsection{Google Sheets Script}
 
-Logging information into the spreadsheet is a tedious task, especially when trying to analyze each device while running tasks on them. This can lead to poorly formatted entries. To minimize this as much as possible, we wrote a script to automatically populate the start time, end time, and date when entering entries. The code for the script can be shown below in listing~\ref{lst:sheetScript}.
+Logging information into the spreadsheet is a tedious task, especially when trying to analyze each device while running tasks on them. The code for the script is shown below in Listing~\ref{lst:sheetScript}.
 
-\begin{lstlisting}[language=C,label={lst:sheetScript},caption={Open and Read from a Socket},captionpos=b]
+\begin{minipage}{\textwidth}
+\begin{lstlisting}[basicstyle=\linespread{0.8}\footnotesize, language=C,label={lst:sheetScript},caption={Open and Read from a Socket},captionpos=b]
 function onEdit() {
   var s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Event Log");
   var r = s.getActiveCell();
@@ -314,38 +336,34 @@ function onEdit() {
   }
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsubsection{Smart Speakers}
 
-Within the smart speakers' section, we include the Google Home, Echo Dot, Eufy Genie, and Echo Show. Whenever interfacing with these devices, we made sure to at least query for the weather and the news. The specific phrases we would use would be ``<wakeword> what's the weather'' and ``<wakeword> what's the news''. Then we would also make sure to set a reminder for a random task in a random timeframe. Then we would mute the devices for a few minutes. We muted these devices to see if they would still be listening if we said the wake word.
+Whenever interfacing with these devices, we always queried for the weather and the news. The specific phrases we used ``$<$wakeword$>$ what's the weather'' and ``$<$wakeword$>$ what's the news'', we  set a reminder for a random task in a random timeframe, and we muted the devices for a few minutes to see if they were still listening if we said the wake word.
 
 \subsubsection{Video Game Consoles}
 
-Within the video game consoles section, we include the Xbox One and Nintendo Switch. When interfacing with these devices, we made sure to play a game on the device for at least 15 minutes. Every week, we would also browse for games on the game store and download free demos.
+When interfacing with these devices, we played a game on the device for at least 15 minutes. Every week, we also browsed for games on the game store and downloaded free demos.
 
-Afterward, we would turn off the Xbox and put the Nintendo Switch into sleep mode. The Nintendo Switch could not be put to sleep when docked, only when disconnected from the dock.
+Afterward, we would turn off the Xbox and put the Nintendo Switch into sleep mode. The Nintendo Switch could not be put to sleep when docked, only when disconnected from the dock, so it was set to sleep rather than power off.
 
-\subsubsection{Media Players}
+\subsubsection{Streaming Devices}
 
-Within the Media Players section, we include the Roku Express, Chromecast, and Amazon Firestick. When interfacing with these devices, we made sure to watch youtube for at least one video or 3 minutes.
+Within the Media Players section, we include the Roku Express, Chromecast, Amazon Firestick, and Samsung Smart TV. When interfacing with these devices, we watched youtube for at least either one video or 3 minutes.
 
-For the Chromecast, we cycled through different devices to cast videos from in which included the Ipad and the Chromebook. We wanted to get varied data in case the Chromecast prioritized streaming from different devices.
+For the Chromecast, we cycled through different devices to cast videos from, including the Ipad and the Chromebook. We wanted to get varied data in case the Chromecast prioritized streaming from different devices.
 
 \subsubsection{Tablets}
+In this experimental setup, we used the tablets less for investigative purposes, but more to set up and interface with other devices.
 
-Within the tablets, we include the Samsung Galaxy Tablet and the IPad.
-
-In this experimental setup, we used the tablets less so for investigative purposes, but more so that we can set up and interface with other devices. These devices are less IoT devices and more full-fledged computers. Thus they would have widely varied network patterns that would be difficult to track.
-
-We mainly used these IPads to set up the WeMos and any device that had to be connected to a SmartHub. It was also used for controlling or changing the names of the WeMos through the app if necessary and for setting up the security camera.
-
-However, regardless, we still tracked the data and had a small set list of things to do on these devices. We used each tablet to browse the web, watch YouTube, and use various apps.
+However, we still tracked the data and had a small set list of things to do on these devices. We used each tablet to browse the web, watch YouTube, and use various apps.
 
 \subsubsection{Security Camera}
 
 The only security camera we worked with was the Eray Security Camera.
 
-Whenever interfacing with this device, we used the device under the app (NVAS2) in the IPad for at least 2 minutes. Usage includes streaming video from the camera to tablet and viewing it. We also controlled the camera through the app through pan and tilt commands. When done experimenting with the security camera, we disconnected the tablet from the camera by using the ``end stream'' button in the NVAS2 app on IPad.
+Whenever interfacing with this device, we used the device under the app NVAS2 in the IPad for at least 2 minutes. Usage included streaming video from the camera to Ipad and viewing it. We also controlled the camera through the app with pan and tilt commands. When done experimenting with the security camera, we disconnected the tablet from the camera by using the ``end stream'' button in the NVAS2 app.
 
 \subsection{realtimeIoTGrapher.py}
 \label{realtimeIoTGrapher.py}
