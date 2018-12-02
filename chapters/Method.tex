@@ -140,6 +140,7 @@ Sniff.py runs a thread for power logging and a thread for network logging. As ea
 
 It begins by opening a socket on the wireless interfaces connected. All IP packets are sniffed through this socket connection as shown in listing \ref{lst:sock}.
 
+\noindent
 \begin{minipage}{\textwidth}
 \begin{lstlisting}[label={lst:sock},caption={Open and Read from a Socket},captionpos=b]
 self.socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(ETH_P_ALL))
@@ -162,6 +163,7 @@ Once the script queries the WeMo for its power information, we relate the WeMo t
 
 One issue with PyWemo and the Belkin WeMos was that they would sometimes disconnect, and the script would miss power data. To solve this issue, the script rescans for WeMos until it finds all 16 WeMos in our testbed. The rescan code for this is shown below in listing \ref{lst:wemoRescanCode}
 
+\noindent
 \begin{minipage}{\textwidth}
 \begin{lstlisting}[label={lst:wemoRescanCode},caption={Rescan if all WeMos not found.}]
     def scan_until_all_found():
@@ -310,6 +312,7 @@ The following subsections explains the script created to automate the event logg
 
 Logging information into the spreadsheet is a tedious task, especially when trying to analyze each device while running tasks on them. The code for the script is shown below in Listing~\ref{lst:sheetScript}.
 
+\noindent
 \begin{minipage}{\textwidth}
 \begin{lstlisting}[basicstyle=\linespread{0.95}\ttfamily, language=C,label={lst:sheetScript},caption={Open and Read from a Socket}]
 function onEdit() {
@@ -405,6 +408,7 @@ The grapher also annotates the data by including a line denoting the average for
 
 The Plotly libraries also provide useful tools when displaying these IoT graphs. It is possible to zoom in and out the displayed graph, select specific traces for viewing, save the graph, and hover over data points to display the specific value. Finally, once a graph is saved Plotly allows further editing of the graph so that it is formatted the way the user wants.
 
+\noindent
 \begin{minipage}{\textwidth}
     \begin{lstlisting}[language=SQL, label={lst:rollup},caption={Efficient SQL query to obtain total Network throughput at each second.}]
     def throughput_query_in_range(db_connection, device, start_time, end_time):
