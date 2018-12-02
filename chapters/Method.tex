@@ -452,58 +452,35 @@ The summation feature can simplify the graph and provide a more holistic view of
 \subsubsection{Limitations}
 As this tool was created entirely for research purposes, there are some edge cases that it fails to handle.
 
-Occassionally the database will have too many connections, at this point, the software will refuse to connect, and the grapher will not work. When graphing in real time, the grapher makes a new connection for each query. If a query fails, connections can quickly build up.
+When the database has too many connections, the software will refuse to connect, and the grapher will not work. When graphing in real time, the grapher makes a new connection for each query. If a query fails, connections can quickly build up.
 
-The graphing tool also gets much slower when the time frame requested is much larger. We have noticed a slow down for queries in time frames longer than 7 hours. In the static graphing mode, it will slow down before graphing the information. However, in real time graphing mode, the tool will make many slow queries, eventually causing too many connections to the database and undefined behavior.
+The graphing tool also slows as the time frame requested increases. We have noticed a slow down for queries with time frames longer than seven hours. In the static graphing mode, the tool slows down before graphing the information. However, in real time graphing mode, the tool will make many slow queries, eventually causing too many connections to the database and undefined behavior.
 
-Because the IP addresses of the devices connected to the database are not static, they will change every once in a while. The Wemo names have also been changed a few times throughout this research for clarity purposes. The graphing tool uses a lookup table that maps the IP address of the device to the corresponding name given to the Wemos. Because we manually create the lookup table, when any of these fields change, the graphing tool will not be able to find the device and will not graph the devices information. In some cases, this situation is handled, and the graphing tool will ignore them. However, in some cases, the graphing tool will crash and require restarting. To solve this, manually change the IP addresses defined in the lookup table in line 23-39 shown in figure\ref{fig:ipLookup} below and increment/decrement the value of the IP a few times. In our experience, we at most had to change the IP up 3, but never more than that. This is just a guess and check method.
+The graphing tool uses a lookup table that maps the IP address of the device to the corresponding name given to the Wemos. Because we manually create the lookup table, when any of these fields change, the graphing is not able to find the device. In some cases, this causes the graphing tool to crash. To solve this, the user must manually change the IP addresses defined in the lookup table in lines 23-39 shown in listing \ref{lst:ipLookup} below.
 
-However, to figure out the new IP address for the table, we have to perform a SQL query in the time frame that a particular device is doing something, and manually examine to see which IP has the highest network throughput. With this method, we had to ensure only one device was in use so that an IP address for another device would not be confused for the current device. To change the corresponding name, check the device inventory excel sheet for a possibly updated naming scheme.
+To figure out the new IP address for the table, the user must perform a SQL query in the time frame that a particular device is doing something, and manually examine the network traffic to see which IP has the highest network throughput. With this method, we had to ensure only one device was in use so that an IP address for another device would not be confused for the current device.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/ipLookup.png}
-    \caption{IP lookup table in real time iot grapher}
-    \label{fig:ipLookup}
-\end{figure}
-
-\subsubsection{How To Install and Run}
-To install and run this analysis tool, follow the instructions at the GitHub site:   \href{https://github.com/nealhnguyen/RealTimeIoTGrapher}{github.com/nealhnguyen/realtimeiotgrapher}.
-
-First, pull the code for this tool from git hub and install the dependencies in the requirements file through pip. At this point, the dependencies are set to run this code on python 2.7.
-
-Next, a 'loginCredentials' file must be created containing the host, user, password, and database information. At which point, running 'python realTimeIoTGraph.py' will start the backend and display its current operation onto the terminal.
-
-The link to the local IP address will contain the graphing tool. Clicking on that will open it onto the default browser for the computer.
-
-\subsubsection{Usage Directions}
-Once the software is running, the grapher can be viewed on a web browser as shown in figure \ref{fig:grapherUsage}. This section will describe each numbered element in the image.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/grapherUsage.png}
-    \caption{RealTimeIoTGrapher usage image}
-    \label{fig:grapherUsage}
-\end{figure}
-
-0. The local IP address presented in the terminal where the grapher is hosted.
-
-1. The interval field and the text box next to it will be dark when the software is in live update mode.
-
-2. The text box here relates to the live update feature of the graph. This is a time field, denoting the window of time the graph will display at a time while it updates. The format is HH:MM:SS where HH is the hour, MM is minutes, and SS is seconds.
-
-3. The time range field and the four elements consecutively after it will be dark instead of grey when it is in static graph mode. In this state, the graphing tool will specify the network traffic and power information in the time window specified.
-
-4. In these three text boxes, the time window for static graphing will be specified. The first box will be the start time, the second box will be the end time, and the last box will be the interval. To specify the time range, fill in any 2 of the three text boxes, and the graphing tool will infer the other number. If all three text boxes are filled, then the graphing tool will use the start and end time text box. To further explain, if the start time and interval are specified, then the window will be start time $\rightarrow$ start time + interval. If the end time and interval are specified, then the time window will be the end time - interval $\rightarrow$ end time.
-
-5. This button causes the graph to update. After updating the time range in step 4, clicking this button will update the graph with the new time range.
-
-6. The ``Use Time Range'' checkbox will toggle the software between live graph mode and static mode. The ``Sum Graph'' checkbox will sum up all power graphs into one. The ``Show Only Power'' checkbox will allow the grapher to avoid a SQL query for the network throughput, speeding up the process in case of pure power analysis.
-
-7. This selection field specifies all the devices the software will create graphs. One, or many devices can be specified at a time. If too many devices are specified at a time, the software may run slow.
-
-8. The traces shown can be selected or deflected to toggle its visibility.
-
-9. This line graph will display the number of bytes sent through the network by a device going in, out, and in total. It will also show the power usage over time. Also, it will show the average value for a graph in the interval of the graph
-
-10. This bar graph displays the spread of network traffic by protocol for each device. It displays the outgoing packets as orange and incoming packets as blue. It will display an individual bar graph for each device and protocol. Similarly, the traces can be clicked on to hide its visibility.
+\begin{minipage}{\textwidth}
+    \begin{lstlisting}[label={lst:ipLookup},caption={IP lookup table in real time iot grapher.}]
+    #region IP Addresses of all devices we are tracking
+    ip = {
+        'Chromecast':       '192.168.12.77',
+        'Echo Dot 2':       '10.42.0.132',
+        'Echo Dot':         '10.42.0.150',
+        'Eufy Genie':       '10.42.0.223',
+        'Eufy Genie 2':     '10.42.0.172',
+        'Fire Stick':       '192.168.12.113',
+        'Google Home':      '10.42.0.236',
+        'IP Camera':        '192.168.12.58',
+        'Nintendo Switch':  '192.168.12.160',
+        'Roku':             '192.168.12.68',
+        'Samsung Hub':      '192.168.12.100',
+        'Samsung TV':       '192.168.12.191',
+        'Smart Light':      '192.168.12.27',
+        'Xbox':             '192.168.12.251',
+        'Echo Show':        '192.168.12.122',
+        'Appliance':        '192.168.12.122',
+        'Appliance1':        '192.168.12.122',
+    }
+    \end{lstlisting}
+\end{minipage}
