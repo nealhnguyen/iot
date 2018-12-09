@@ -1,25 +1,39 @@
 \chapter{Results}
 \label{Results}
-This chapter covers different network and power usage patterns for the IoT devices. This chapter starts with the effects of changing the smart plug that the device connects to in section \ref{swappingSwitch}. Then section \ref{wholeDB} covers the protocol spread over the whole database. The next two subsections \ref{smartSpeakerComparisonSection} and \ref{Streaming Devices} covers smart speakers and streaming devices while idle, in use, and during first boot, including other intersting results if any. Sections \ref{sumPowerGraph} and\ref{sumPowerGraphWithNoise} covers the summed power graphs that simulate a shared powerline with and without noise. Finally this chapter concludes with a comparison between smart speakers in section \ref{smartSpeakerComparisonSection}.
+This chapter covers different network and power usage patterns for the IoT devices. To confirm consistency between WeMos, section \ref{swappingSwitch} starts with the effects of changing the smart plug that the device connects. Section \ref{wholeDB} covers the the percentage of each protocol in the database. Sections \ref{smartSpeakerResults} and \ref{Streaming Devices} cover smart speakers and streaming devices netowrk and power use while idle, in use, and during first boot, including other intersting results if any. Sections \ref{sumPowerGraph} and \ref{sumPowerGraphWithNoise} cover summed power graphs of the smart speakers to simulate a shared powerline with and without noise from high power household devices to determine if it is possible to determine what smart speaker is in use from a shared powerline. Finally section \ref{smartSpeakerComparisonSection} ends with a comparison between smart speakers for further general analysis.
 
-Sections \ref{Whole Database}, \ref{smartSpeakerResults}, and \ref{Streaming Devices} are covered in Ryan Frawley's paper~\cite{frawley_2018} and are paraphrased with no further discussion in section \ref{Discussion}. Frawley's paper contains a more in-depth analysis in those sections and include GeoIP information that highlights the spread of locations the database and each device communicates with the most.
+The topics of sections \ref{Whole Database}, \ref{smartSpeakerResults}, and \ref{Streaming Devices} are covered in Ryan Frawley's paper~\cite{frawley_2018} and and are briefly covered in this chapter for completion. Frawley's paper contains a more in-depth analysis in those sections and includes GeoIP \cite{maxmind} information from Cal Poly's ITS servers \cite{its} that highlights the locations and companies the network packets are being sent to and recieved from. Frawley's paper also includes data of unencrypted packets being sent and recieved along with the text within them.
 
 When obtaining data, most of the packets are encrypted, so the data we present focuses on metadata such as size, protocol, source IP, dest IP. For power analysis, we only use the power used at each second.
 
 \section{Swapping the Power Switch}
 \label{swappingSwitch}
-To check if the smart switches were consistent between devices we swapped various devices with various power switches. After WeMo swaps with various devices, no significant change was found when swapping the switches. One example is shown in figure \ref{fig:switchEchoEufyPlug} where we swapped the Echo Dot 1 and Eufy Genie 1s' corresponding Wemo smart switch. After starting restarting, the Eufy Genie's power reads the same as the Echo Dot had previously read.
+To check if the smart switch voltage readings are consistent between devices we swapped various devices with various power switches. For example whnAfter WeMo swaps with various devices, no significant change was found when swapping the switches. Some examples are shown \ref{fig:swapEcho1Home}, \ref{fig:swapEufy1Echo1}, and \ref{fig:swapEufy1Home}. In every case the traces swapped before and after switching.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{figures/switchEchoEufyPlug.png}
-    \caption{Switching the Echo Dot 1 and Eufy Genie 1's smart switch}
-    \label{fig:switchEchoEufyPlug}
+    \includegraphics[width=1\textwidth]{figures/swapEcho1Home.png}
+    \caption{Connected the Echo Dot 1 to WeMo for `Eufy Genie 1' and vice versa. The traces swap before and after switching.}
+    \label{fig:swapEcho1Home}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/swapEufy1Echo1.png}
+    \caption{Connected the Eufy Genie 1 to WeMo for `Echo Dot 1' and vice versa. The traces swap before and after switching.}
+    \label{fig:swapEufy1Echo1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/swapEufy1Home.png}
+    \caption{Connected the Google Home to WeMo for `Eufy Genie 1' and vice versa. The traces swap before and after switching.}
+    \label{fig:swapEufy1Home}
 \end{figure}
 
 \section{Whole Database}
 \label{wholeDB}
-When examining the whole database, most of the traffic is TCP packets. The second most significant protocol is UDP. The spread of protocols can be shown in figure \ref{fig:tcpudp}.
+When examining the whole database, most of the traffic is TCP packets. The second most significant protocol is UDP. The amount of packets using each protocol are shown in \ref{fig:tcpudp}.
 
 \label{Whole Database}
 \begin{figure}[H]
@@ -43,7 +57,7 @@ The Google Home Mini's idle traffic broadcasts SSDP (Simple Service Discovery Pr
   \label{fig:home}
 \end{figure}
 
-A graph of the Google Home Mini is shown in the figure \ref{fig:homequery}. The Google Home Mini is first asked for the news and then told to stop. After waiting for 40 minutes, we ask it for the weather forecast.
+A graph of the Google Home Mini's network and power usage under varios commands are shown in the figure \ref{fig:homequery}. The Google Home Mini is first asked for the news and then told to stop. After waiting for 40 minutes, we ask it for the weather forecast.
 
 \begin{figure}[H]
   \centering
@@ -128,7 +142,7 @@ When streaming, the Roku's power usage and network throughput rise and stay at a
 
 \section{Summed Power Graph}
 \label{sumPowerGraph}
-In this section, we show graphs of the five smart speakers summed up as one graph of power usage. The devices used includes two echo dots, 2 Eufy genies, and 1 Google chrome cast.
+In this section, we show graphs of the five smart speakers summed together as one graph of power usage. This will form the basis for futher analysis of a shared powerline, used to simualte a powerline from a house. The devices used includes two echo dots, 2 Eufy genies, and 1 Google chrome cast.
 
 \begin{figure}[H]
   \centering
@@ -137,7 +151,7 @@ In this section, we show graphs of the five smart speakers summed up as one grap
   \label{fig:weatherSum}
 \end{figure}
 
-The first graph in figiure \ref{fig:weatherSum} is shown in a time frame where each device was unmuted and muted for a period. This shows if muting and unmuting the devices affected anything. In this graph, there are changes on the first runthrough, but when repeating the process nothing happens. Further runthroughs show that the power usage stayed the same. In the last half of the graph we queried each smart speaker for the weather while all other smart speakers were muted at the 18:30 mark. We queried each device in order 3-4 times in consecutive order so that it is easy to see and to check for consistent results. The Eufy had the smallest spike for this command at 400 mW, then the google home at 600 mW, and finally the echo dot at 2000 mW.
+The first graph in figure \ref{fig:weatherSum} is shown in a time frame where each device was unmuted and muted for a period. This shows if muting and unmuting the devices affected the power or network usage. There are changes on the first runthrough, but when repeating the process nothing happens. Further runthroughs show that the power usage stayed the same. In the last half of the graph we queried each smart speaker for the weather while all other smart speakers were muted at the 18:30 mark. We query each device 3-4 times for the weather. The Eufy had the smallest spike for the ``what\'s the weather'' command at 400 mW, then the google home at 600 mW, and finally the echo dot at 2000 mW.
 
 \begin{figure}[H]
   \centering
@@ -147,9 +161,9 @@ The first graph in figiure \ref{fig:weatherSum} is shown in a time frame where e
   \label{fig:mixedNewsSum}
 \end{figure}
 
-The next graph \ref{fig:mixedNewsSum} shows the smart speakers power usage when asked for the news. Each speaker was asked for the news at random as to prevent any optimizations. This graph and the rest of the summed graphs in this section use the same notation for signifying commands. Two corresponding dots of the same color signify the start and end of the command for a specific device. If the dots are on another level, then this command has been repeated another time.
+The next graph, \ref{fig:mixedNewsSum}, shows the smart speakers power usage when asked for the news. Each speaker was asked for the news. This graph and the rest of the summed graphs in this section use the same notation for signifying commands. Two corresponding dots of the same color signify the start and end of the command for a specific device. If the dots are on another level, then this command has been repeated another time.
 
-In this graph, all devices have a spike at the beginning and end of the command and maintain a steady energy usage in between that is slightly higher than the idle energy used. The peak to peak spike of the Eufy Genie is the smallest at 350 mW, then the Google Home at 500 mW, and finally the Echo Dot at 1900 mW.
+In figure \ref{fig:mixedNewsSum}, all devices have a spike at the beginning and end of the command and maintain a steady energy usage in between that is slightly higher than the idle energy used. The peak to peak spike of the Eufy Genie is the smallest at 350 mW, then the Google Home at 500 mW, and finally the Echo Dot at 1900 mW.
 
 \begin{figure}[H]
   \centering
@@ -159,11 +173,11 @@ In this graph, all devices have a spike at the beginning and end of the command 
   \label{fig:bestBballSum}
 \end{figure}
 
-The next graph \ref{fig:bestBballSum} shows the smart speakers when asked for the best basketball player. The annotation scheme is the same as before. Each smart speaker is queried for the best basketball player in consecutive order four times. Similar to before, the Eufy has a power spike of 420 mW peak to peak, the Google Home has a power Spike of 720 mW, and the Echo Dot has a power spike of 2180 mW.
+The next graph, \ref{fig:bestBballSum}, shows the smart speakers when asked for the best basketball player. The annotation scheme is the same as before. Each smart speaker is queried for the best basketball player in consecutive order four times. Similar to before, the Eufy has a power spike of 420 mW peak to peak, the Google Home has a power Spike of 720 mW, and the Echo Dot has a power spike of 2180 mW.
 
-However, when looking at graph \ref{fig:bestBballSum}, there is a power spike that is unaccounted for in correspondence to the event log. We made a query, invoking all other power spikes but we did not do anything for the power spike at 18:12 that is higher than the other Eufy power spikes.
+When looking at graph \ref{fig:bestBballSum}, there is a power spike that is unaccounted for in correspondence to the event log at 18:12. We made a query, invoking all other power spikes but we did not do anything for the power spike at 18:12 that is higher than the other Eufy power spikes shown in first half of figure \ref{fig:bestBballSum} up to 18:24.
 
-To figure what the power spike at 18:12 is, we separated the graphs into individual power traces as shown in figure \ref{fig:bestBballSeperate}. From the graph, the power spike at 18:12 is attributed to the Echo Dot 2. We then looked at the individual network usage for each of these devices in this time frame as shown in figure \ref{fig:bestBballNetwork}. At 18:12, there is no significant network usage. We had no conclusive evidence to decide what the power spike is accounted to, but section \ref{Discussion} covers some speculated reasons.
+To figure what the power spike at 18:12 is, we separated the graphs into individual power traces as shown in figure \ref{fig:bestBballSeperate}. From this graph, the power spike at 18:12 is attributed to the Echo Dot 2 because it is the only trace with a spike occuring. We then looked at the individual network usage for each of these devices in this time frame as shown in figure \ref{fig:bestBballNetwork}. At 18:12, there is no significant network usage. We had no conclusive evidence to decide what the power spike means, but section \ref{Discussion} covers some speculated reasons.
 
 \begin{figure}[H]
   \centering
@@ -180,7 +194,7 @@ To figure what the power spike at 18:12 is, we separated the graphs into individ
   \label{fig:bestBballNetwork}
 \end{figure}
 
-The power spike information for each query type (``what's the weather'' ``what's the news'', ``who's the best basketball player'') are shown below in figure \ref{fig:spikeVoltages}. This bar graph also includes the average spike height for each device over these three commands. The black line at the top of each bar shows the standard deviation. Averaging peak to peak voltage spikes for each device shows the Eufy Genie with a 390 mW spike with 36.1 mW standard deviation, the Google Home with a 606.7 mW spike with 110 mW standard deviation, the Echo Dot with a 2026.7 mW spike with 149.89 mW standard deviation.
+The power spike information for each query type (``what's the weather'' ``what's the news'', ``who's the best basketball player'') is shown below in figure \ref{fig:spikeVoltages}. From figures \ref{fig:weatherSum}, \ref{fig:mixedNewsSum}, and \ref{fig:bestBballSum} there is always a characteristic power spike that occurs at the beginning of a command for each device. This bar graph also includes the total average spike height for each command for all three of these commands. The black line at the top of each bar shows the standard deviation. Averaging peak to peak voltage spikes for each device shows the Eufy Genie with a 390 mW spike with 36.1 mW standard deviation, the Google Home with a 606.7 mW spike with 110 mW standard deviation, the Echo Dot with a 2026.7 mW spike with 149.89 mW standard deviation.
 
 \begin{figure}[H]
   \centering
