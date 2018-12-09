@@ -43,6 +43,14 @@ The wireless access point is an Intel NUC \cite{nuc}. We loaded Ubuntu\cite{ubun
 
 One challenging thing about the NUC is that its internal wireless chip is very slow. The throughput when using the wireless chip was measured to be 12 Mb/s down on Speedtest.net by Ookla \cite{speedtest} when connected to with a Chromebook \cite{chromebook} (25 Mb/s is the minimum possible for broadband). This rate limitation caused many of the Belkin WeMo smart switches \cite{wemo} to drop their connection intermittently, causing gaps in recorded power data. To solve this, we added a USB wireless antenna to the NUC. This antenna improved our internet speed to 30 Mb/s down when tested on Speedtest.net by Ookla with the same Chromebook, solving the issue where devices would lose network connectivity.
 
+\subsection{Smart Power Plugs}
+
+Smart power plugs are Wi-Fi capable, pass through outlets that another device plugs into. The outlets collect and transmit power usage over the network. They are critical to the power consumption logging in this research.
+
+We used the Belkin WeMo Insight. We chose this smart plug because there are many open source Python libraries for pulling power information from them, and they are relatively affordable.
+
+When setting these smart plugs up, we named each smart plug based on the device connected to it so that when we pull power information with our scripts, we can easily reference data to a smart plug. This informal naming led to issues when the wrong device is connected to the wrong smart plug, as discussed in section \ref{realtimeIoTGrapher.py}
+
 \subsection{Devices}
 \label{Devices}
 This section goes over the smart speakers, streaming devices, video game consoles, tablets, security cameras, or other devices as listed in figure \ref{tab:devices}. These devices were included based on their popularity, as the goal of the paper is to build a data set from common household IoT items.
@@ -108,14 +116,6 @@ We also connected several other devices that are harder to categorize, analyze, 
 We have a smart hub connected to a smart lock, an indoor room temperature sensor, and smart LED light bulbs. These devices are difficult to analyze because they communicate with the smart hub through Zigbee or Bluetooth at which point the smart hub aggregates the data and communicates with the network. To look at the network traffic caused by smart lights individually, we prevented all devices besides the smart LED bulbs from communicating with the smart hub. This isolation minimized other packet noise to the smart hub so that we can monitor the smart hub traffic as a replacement for the smart LED bulbs. However, even then, the smart hub might have extra overhead for other tasks, making isolated analysis difficult.
 
 We also have a Chromebook which we used to control the Chromecast. However, because this is more a laptop than an IoT device, we decided to leave this out of our research
-
-\subsection{Smart Power Plugs}
-
-Smart power plugs are Wi-Fi capable, pass through outlets that another device plugs into. The outlets collect and transmit power usage over the network. They are critical to the power consumption logging in this research.
-
-We used the Belkin WeMo Insight. We chose this smart plug because there are many open source Python libraries for pulling power information from them, and they are relatively affordable.
-
-When setting these smart plugs up, we named each smart plug based on the device connected to it so that when we pull power information with our scripts, we can easily reference data to a smart plug. This informal naming led to issues when the wrong device is connected to the wrong smart plug, as discussed in section \ref{realtimeIoTGrapher.py}
 
 \subsection{Wiring and Configuration}
 
@@ -191,11 +191,11 @@ One issue with PyWemo and the Belkin WeMos was that they would sometimes disconn
 \subsection{Database}
 \label{Database}
 
-To store all the result of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space. To interface with our database, we used a combination of the RealTimeIoTGrapher from section \ref{realtimeIoTGrapher.py}, Navicat \cite{navicat}, and MySQL’s command line tool \cite{mysqlCommandline}.
+To store all the result of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space. The database contains two tables, one for the network traffic and one for the power usage data. To interface with our database, we used a combination of the RealTimeIoTGrapher from section \ref{realtimeIoTGrapher.py}, Navicat \cite{navicat}, and MySQL’s command line tool \cite{mysqlCommandline}.
 
 \subsubsection{Network Table}
 
-The largest part of our database is the IP network table. This table contains all the network packets that have gone through the NUC WAP. It is currently 179.1 GB and contains 116,830,077 entries. It is so large because it consists of all network traffic generated over a 12-month period. In those 12 months, we did many high bandwidth tasks such as playing music or video. These entries contain the raw hex dump of the whole packet, which contains all the metadata plus data load, further contributing to the massive size of this table. The data table's rows represent a single packet with the columns shown in the table below \ref{tab:netcol}.
+The largest part of our database is the IP network table. This table contains all the network packets that have gone through the NUC WAP. It is currently 179.1 GB and contains 116,830,077 entries. It is so large because it consists of all network traffic generated over a 12-month period. In those 12 months, we did many high bandwidth tasks such as playing music or video. These entries contain the raw hex dump of the whole packet, which contains all the metadata plus data load, further contributing to the massive size of this table. The data table's rows represent a single packet with the columns shown in the table below \ref{tab:netcol}. The columns this research uses from this table are the time, source, destination, and size fields to get network throughput over time.
 
 \begin{table}[H]
     \centering
@@ -217,7 +217,6 @@ The largest part of our database is the IP network table. This table contains al
     \end{tabular}
     \label{tab:netcol}
     \end{table}
-
 Common SQL commands we used for our analysis include those shown in listings \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}. The most useful commands generally required examining total throughput or device throughput using ROLLUP, shown in figure \ref{fig:navicatRollup}.
 
 \begin{figure}[H]
@@ -233,7 +232,7 @@ In the database, each device can be tracked down by looking for the IP address o
 
 \subsubsection{Power Table}
 
-The power table holds the most important data for this portion of the research, and we refer to it for the majority of the paper's findings. The size of this table is much smaller than the network table. It contains 5.84 GB of data and 61,240,189 entries in the database. The significant difference in size between the IP table and power table is because each device only produces one entry power entry every second. The columns of the power table are shown below in figure\ref{tab:powcol}.
+The power table holds the most important data for this portion of the research, and we refer to it for the majority of the paper's findings. The size of this table is much smaller than the network table. It contains 5.84 GB of data and 61,240,189 entries in the database. The significant difference in size between the IP table and power table is because each device only produces one entry power entry every second. The columns of the power table are shown below in figure\ref{tab:powcol}. This pa
 
 \begin{table}[H]
     \centering
@@ -288,6 +287,30 @@ To keep track of all devices and important details about them, we log a device's
         Game Console & Nintendo Switch   & n/a                         & 192.168.12.160 & WeMo, controller & no   \\ \bottomrule
         \end{tabular}}
     \label{tab:deviceInventory}
+\end{table}
+
+\subsection{IP History}
+\label{IP History}
+A Google Sheets file is used to keep track of the IP address of each device's IP address as it changes as shown in table \ref{tab:ipHistory}. The `Date Noticed' column is the date that the IP address was noted to have changed. The `Device' is the name of the device that changed IP address. The the `Old IP' and `New IP' are the IP addresses for the device before and at that current time respectively. Table \ref{tab:ipHistory} was added near the end of the research for this paper for future students to use when cleanign up the database.
+
+\begin{table}[H]
+    \centering
+    \caption{History of IP addresses for each device}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{@{}lllll@{}}
+        \toprule
+        Date Noticed       & Device              & Old IP         & New IP \\ \midrule
+        April 10, 2:15 PM  & Samsung TV          & 192.168.12.148 & 192.168.12.149 \\
+        April 11, 2:27 PM  & Chromecast          & 192.168.12.77  & 192.168.12.78 \\
+        April 12, 5:16 PM  & Fire Stick          & 192.168.12.113 & 192.168.12.114 \\
+        April 20, 10:31 PM & Galaxy Tablet       & 192.168.12.222 & 192.168.12.223 \\
+        April 20, 5:37 PM  & Camera              & None           & 192.168.12.57 \\
+        April 24, 5:36 PM  & Home Montioring Kit & None           & 192.168.12.191 \\
+        May 8, 5:59 PM     & Home Montioring Kit & 192.168.12.191 & 192.168.12.100 \\
+        May 8, 6:21 PM     & Camera              & 192.168.12.57  & 192.168.12.84/83 \\
+        May 18, 12:04      & Samsung TV          & 192.168.12.149 & 192.168.12.191 \\ \bottomrule
+        \end{tabular}}
+    \label{tab:ipHistory}
 \end{table}
 
 
