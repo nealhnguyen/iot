@@ -30,6 +30,7 @@
 *.mtc1
 *.out
 *.synctex.gz
+*.synctex
 .vscode
 
 # Mac IDE files
