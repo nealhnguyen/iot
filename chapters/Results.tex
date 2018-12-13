@@ -125,6 +125,37 @@ There is already significant analysis on network usage of IoT devices as shown i
 
 This section first examines the power usage of the smart speakers separately before examining total power usage in Section \ref{sumPowerGraph}.
 
+\subsection{Smart Speaker Comparison}
+\label{smartSpeakerComparisonSection}
+We wanted to compare the energy and network usages of the three smart speakers individually so that we can speculate trade-offs that they make.
+
+In the Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, we display the power and network traces for the Echo Dot 1, Eufy Genie 1, and Google Home. We used the same time frame as the graph in Figure \ref{fig:bestBballSeperate} for the two graphs for Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}. We removed the second Echo Dot 2 and Eufy Genie 2 so that there is one of each device.
+
+In the time frame of Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, the average power, from greatest to least, starts with the Echo Dot (1650 mW), then the Eufy Genie (1325 mW), and the Google Home (1175 mW). For average throughput, from greatest to least, there is the Eufy Genie (1743 bytes), Google Home (800 bytes), and Echo Dot (325 bytes). These results are shown in Figure \ref{fig:smartSpeakerComparison}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{figures/smartSpeakerSeperate.png}
+  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same graph as Figure \ref{fig:bestBballSeperate} with Echo Dot 2 and Eufy Genie removed.}
+  \label{fig:smartSpeakerSeperate}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{figures/smartSpeakerNetworkSeperate.png}
+  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same time frame as Figure \ref{fig:smartSpeakerSeperate}}
+  \label{fig:smartSpeakerNetworkSeperate}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/smartSpeakerComparison.png}
+    \caption{Average power and network usage at each second for the Echo Dot, Eufy Genie, and Google Home in the time frame of Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}}
+    \label{fig:smartSpeakerComparison}
+  \end{figure}
+
+From Figure \ref{fig:smartSpeakerComparison}, we can see that the Echo uses the most power, then the Eufy, then the Google Home. However, the Eufy uses the most network throughput, then the Google Home, then the Echo Dot. At its core, we believe each device is making some tradeoff between power and network usage. Possibly, the Echo dot is trying to do as much on board operations as possible, increasing the power usage. Possibly, the Eufy Genie is constantly querying for information, thus reducing power usage, but increasing network usage. Possibly, the Echo Dot has poor power optimizations. Further analysis to see why could be interesting.
+
 \subsection{Echo Dot Brightness Sensor}
 \label{Echo Dot Brightness Sensor}
 One interesting finding from the Echo Dot is that it has a light sensor When turning on the room lights, the LEDs on the Echo Dot brighten to adapt. The brightness change causes the Echo Dot to use more idle power as shown in Figure \ref{fig:echolights}.
@@ -321,35 +352,3 @@ Figures \ref{fig:fanIdle} - \ref{fig:nucInUse} show that it is possible to deter
 But if the noise within the house is considerable in magnitude such as the microwave or fridge while in use \ref{fig:uWaveInUse} \ref{fig:fridgeInUse}, this noise will squash the power spikes from the smart speakers. The spikes can no longer be seen, even when zoomed in, as shown in Figure \ref{fig:uWaveInUseSeperate}. The smart speaker spikes also disappear if the noise of a device is on the same or a larger magnitude than the power spikes, as shown in Figure \ref{fig:nucInUse}. The power spikes can still be seen in the sum graph for this figure, but it is impossible to visually differentiate between a power spike from a speaker and the introduced noise without knowing the original smart speaker graph.
 
 These two cases vary depending on the household. If many battery power devices such as laptops (replacing the NUC) or phones are used, then it may still be possible to determine the power spikes visually. If high power devices such as the microwave or fridge are not in use often, then the smart speaker spikes may be visually correlated. But if a household has many devices plugged into an outlet for power, then the smart speaker power spikes are likely to disappear from the additive noise of all the devices. Regardless, there are privacy implications in a household's power line. With easy, direct, access to a household's power line \cite{griffith_2017}, someone could determine the device in use within a household.
-
-\section{Smart Speaker Comparison}
-\label{smartSpeakerComparisonSection}
-The figures in Section \ref{sumPowerGraph} show that the Echo Dot uses a lot more energy than the other smart speakers. Because of this, we wanted to compare the energy and network usages of the three smart speakers individually so that we can determine trade-offs that they make.
-
-In the Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, we display the power and network traces for the Echo Dot 1, Eufy Genie 1, and Google Home. We used the same time frame as the graph in Figure \ref{fig:bestBballSeperate} for the two graphs for Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}. We removed the second Echo Dot 2 and Eufy Genie 2 so that there is one of each device.
-
-In the time frame of Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, the average power, from greatest to least, starts with the Echo Dot (1650 mW), then the Eufy Genie (1325 mW), and the Google Home (1175 mW). For average throughput, from greatest to least, there is the Eufy Genie (1743 bytes), Google Home (800 bytes), and Echo Dot (325 bytes). These results are shown in Figure \ref{fig:smartSpeakerComparison}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=1\textwidth]{figures/smartSpeakerSeperate.png}
-  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same graph as Figure \ref{fig:bestBballSeperate} with Echo Dot 2 and Eufy Genie removed.}
-  \label{fig:smartSpeakerSeperate}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=1\textwidth]{figures/smartSpeakerNetworkSeperate.png}
-  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same time frame as Figure \ref{fig:smartSpeakerSeperate}}
-  \label{fig:smartSpeakerNetworkSeperate}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/smartSpeakerComparison.png}
-    \caption{Average power and network usage at each second for the Echo Dot, Eufy Genie, and Google Home in the time frame of Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}}
-    \label{fig:smartSpeakerComparison}
-  \end{figure}
-
-
-From Figure \ref{fig:smartSpeakerComparison}, we can see that the Echo uses the most power, then the Eufy, then the Google Home. However, the Eufy uses the most network throughput, then the Google Home, then the Echo Dot. At its core, we believe each device is making some tradeoff between power and network usage. Possibly, the Echo dot is trying to do as much on board operations as possible, increasing the power usage. Possibly, the Eufy Genie is constantly querying for information, thus reducing power usage, but increasing network usage. Possibly, the Echo Dot has poor power optimizations. Further analysis to see why could be interesting.
