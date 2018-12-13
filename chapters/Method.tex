@@ -112,6 +112,7 @@ We have a smart hub connected to a smart lock, an indoor room temperature sensor
 We also have a Chromebook which we used to control the Chromecast. However, because the Chromebook is more a laptop than an IoT device, we decided to leave this out of our research.
 
 \subsection{Wiring and Configuration}
+\label{Wiring and Configuration}
 After obtaining all the hardware necessary, the next thing was to set up the IoT testbed. This section briefly covers WeMo Insight setup, IoT device setup, and challenges/considerations faced when setting up the IoT testbed. Frawley's paper \cite{frawley_2018} previously covered this section, refer to his paper for more details. Also, the NUC was previously acquired and setup by Ryan Frawley and other students and is not covered in this section.
 
 It was essential to log power as soon as possible to capture a first-boot power network usage for each device. So first, before setting up the IoT devices, Ryan set up the NUC for logging. We considered setting static IPs for each device, but we decided that the average user would not set up a static IP for their device and left dynamic IPs. Some devices had already been used, so they do not contain startup information(Xbox and the Echo Dot 1).
@@ -188,7 +189,7 @@ One issue with PyWemo and the Belkin WeMos is that they would sometimes disconne
 To store all the results of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space. The database contains two tables, one for the network traffic and one for the power usage data. To interface with our database, we used a combination of the RealTimeIoTGrapher from section \ref{realtimeIoTGrapher.py}, Navicat \cite{navicat}, and MySQL’s command line tool \cite{mysqlCommandline}.
 
 \subsubsection{Network Table}
-
+\label{Network Table}
 The largest part of our database is the IP network table. It is currently 179.1 GB and contains 116,830,077 entries. It is so large because it consists of all network traffic generated over 12 months. In those 12 months, we did many high bandwidth tasks such as playing music or video. These entries contain the raw hex dump of the whole packet, which contains all the metadata plus data load, further contributing to the massive size of this table. The data table's rows represent a single packet with the columns shown in the table below \ref{tab:netcol}. The research presented in Chapter \ref{Results} primarily relies on the time, source, destination, and size fields to get network throughput over time.
 
 \begin{table}[H]
@@ -222,7 +223,7 @@ Common SQL commands we used for our analysis include those shown in listings \re
 
 The hex dump column drastically increases the size of each entry in the network table. However, as a raw network packet, it is very flexible and can be manipulated for many more use cases than the targeted columns we have. This flexibility is useful for future research that may require data we did not explicitly pull out for this project.
 
-In the database, each device can be tracked down by looking for the IP address of that device in the source or destination columns. However, due to the use of dynamic IPs in our network setup a single device can be under multiple IPs within the table. We ignored this issue until a query for a particular IP stopped working. At which point we would invoke a command on the device whose IP changed to flood the database with packets from that device, query the database in the time frame of the command, and obtain the new IP. We logged all devices and their current IP in a Google Sheets \cite{googleSheets} file covered in subsection \ref{Device Inventory}.
+In the database, each device can be tracked down by looking for the IP address of that device in the source or destination columns. However, due to the use of dynamic IPs in our network setup a single device can be under multiple IPs within the table. We ignored this issue until a query for a particular IP stopped working. At which point we would invoke a command on the device whose IP changed to flood the database with packets from that device, query the database in the time frame of the command, and obtain the new IP. We logged all devices and their current IP in a Google Sheets \cite{googleSheets} file covered in subsection \ref{IP History}.
 
 \subsubsection{Power Table}
 
@@ -286,7 +287,7 @@ To keep track of all devices and important details about them, we log a device's
 
 \subsection{IP History}
 \label{IP History}
-A Google Sheets file is used to keep track of each device's IP address as it changes as shown in table \ref{tab:ipHistory}. The `Date Noticed' column is the date that the IP address was noted to have changed. The `Device' is the name of the device that changed IP address. The `Old IP' and `New IP' are the IP addresses for the device before and at that current time respectively. Newly added devices will have an `Old IP' entry as `None'.
+As mentioned in subsection \ref{Wiring and Configuration}, the IP addresses of each device are dynamic. They change over time as DHCP assigns new IP addresses to a device. A Google Sheets file is used to keep track of each device's IP address as it changes as shown in table \ref{tab:ipHistory}. The `Date Noticed' column is the date that the IP address was noted to have changed. The `Device' is the name of the device that changed IP address. The `Old IP' and `New IP' are the IP addresses for the device before and at that current time respectively. Newly added devices will have an `Old IP' entry as `None'.
 
 \begin{table}[H]
     \centering
@@ -395,13 +396,13 @@ Whenever interfacing with this device, we used the device through the app NVAS2 
 \subsection{realtimeIoTGrapher.py}
 \label{realtimeIoTGrapher.py}
 
-This section covers a visual tool I created to look for trends. We initially graphed the data into Google Sheets and graphed it. The tables and formulas are shown in figure \ref{fig:excelLogging}. This process was tedious and time-consuming. We had to copy the data over after making a SQL query, extract unique time values, and then get the total network and power usage at each time interval.
+This section covers a visual tool I created to look for trends. Originally, for trend analysis, we queried the database for the necessary data, copied the data over to Google Sheets, created the necessary formulas, graphed the network and power usage over time, and finally analyzed this graph. The tables and formulas are shown in figure \ref{fig:excelLogging}. This process was tedious and time-consuming because we had to manually format an SQL query, entering unique time values and the IP address of the device. Copying large datasets from SQL into Google Sheets would also lag the browser.
 
-To address these problems, I created a python script that automatically forms graphs, including the one shown in figure \ref{fig:interpolated} when given the time range and the devices. This automation sped up the analysis process and provided extra features covered in section \ref{Features}.
+To address these problems, I created a Python script that automatically forms graphs, including the one shown in figure, \ref{fig:interpolated} when given a time range and the desired devices. This automation sped up the analysis process and provided extra features covered in section \ref{Features}.
 
-This Python script leverages the Plotly library, which, given data, graphs it onto a local web page for viewing. Plotly comes with many useful tools for further analysis and can be extended to run on a public web page for public viewing.
+This Python script leverages the Plotly \cite{plotly} library, which, given data, graphs it onto a local web page for viewing. Plotly comes with many useful tools for further analysis and can be extended to run on a public web page for public viewing.
 
-I plan to distribute this out with our database so that researchers can view the power and network information of any device at a glance.
+I plan to distribute this tool with our database so that researchers can view the power and network information of any device at a glance.
 
 \begin{figure}[H]
     \centering
@@ -424,9 +425,23 @@ This section discusses the features that RealTimeIoTGrapher (grapher) provides.
 
 At its core, this program automates the creation of the graph shown in figure \ref{fig:tvThroughput}. The user can specify a time range that the graph should cover and what devices to graph. By default, the graph shows power, input traffic, output traffic, and total network traffic over the time range specified.
 
-The grapher also annotates the data by including a line denoting the average for each of the traces over the time range currently displayed. It also annotates the maximum and minimum values in the time range for each trace. The grapher can also display information in real time for a user-settable interval amount of time, updating every second.
+The grapher also annotates the data by including a line denoting the average for each of the traces over the time range currently displayed. It also annotates the maximum and minimum values in the time range for each trace. The grapher can also display information in real time for any specified window size (update live showing ten minutes at a time), updating every second.
 
-The Plotly libraries also provide useful tools when displaying these IoT graphs. It is possible to zoom in and out the displayed graph, select specific traces for viewing, save the graph, and hover over data points to display the specific value. Finally, once a graph is saved Plotly allows further editing of the graph so that it is formatted the way the user wants.
+The Plotly libraries also provide useful tools when displaying these IoT graphs. It is possible to zoom in and out the displayed graph, select specific traces for viewing, save the graph, and hover over data points to display the specific value. Finally, once a graph is saved as shown in figure \ref{fig:plotlySave} Plotly allows further editing of the graph so that it is formatted the way the user wants as shown in figure \ref{fig:plotlyEdit}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/plotlySave.png}
+    \caption{Screen of saved plotly graphs.}
+    \label{fig:plotlySave}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/plotlyEdit.png}
+    \caption{Screen to edit saved Plotly graphs containing an edit tool bar, the graph data, and the graph.}
+    \label{fig:plotlyEdit}
+\end{figure}
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -450,7 +465,9 @@ The Plotly libraries also provide useful tools when displaying these IoT graphs.
     \end{lstlisting}
 \end{minipage}
 
-To reduce local computation, the grapher offloads work to the server through a SQL query. When querying for network data, it performs a SQL ROLLUP to sum the incoming and outgoing network throughput to obtain the total throughput. ROLLUP is required because it provides nested queries and causes the query to sum up the data by time for each type of packet. This query is formatted as shown in listing \ref{lst:rollup}.
+To reduce local computation, the grapher offloads work to the server through an SQL query. ROLLUP provides nested queries and causes the query to sum up the data by time for each type of packet. When querying for network data, the grapher performs an SQL ROLLUP to sum the incoming and outgoing network throughput to obtain the total throughput. This query is formatted as shown in listing \ref{lst:rollup}.
+
+To simplify data handling in the grapher, the grapher stores queried data into Pandas \cite{pandas}. Pandas is the industry standard library for dealing with tabular data. It integrates with SQL and has builtin functions to query directly from a database into a Pandas object. Pandas provides easy key, value scheme for indexing by column or row and for parsing the data.
 
 \begin{figure}[H]
     \centering
@@ -466,23 +483,21 @@ To reduce local computation, the grapher offloads work to the server through a S
     \label{fig:interpolated}
 \end{figure}
 
-The grapher can also sum up all power traces into one single trace. Originally, when summing the graphs, it would add the two Pandas \cite{pandas} data frames that represent each trace, and graph the result, shown in figure \ref{fig:noninterpolated}. Pandas is a Python library that represents a multidimensional array as a table, providing useful methods for manipulating the dataset. However, the WeMo does not always sample every second. This is an issue if, at some time, one device X has a power point, but another device does not. The summation counts the empty data point as 0, resulting in an erroneous sum. This was solved by interpolating data for every second for each device before summing data frames, with a built-in Pandas feature. Interpolation is shown in \ref{fig:interpolated} as a graph.
+The grapher can also sum all power traces into one single trace. Originally, when summing the graphs, it would add the two Pandas data frames that represent each trace, and graph the result, shown in figure \ref{fig:noninterpolated}. However, the WeMo does not always sample every second. This is an issue if, at some time, one device X has a power point, but another device does not. The summation counts the empty data point as 0, resulting in an erroneous sum for certain frames. This was solved by interpolating data for every second for each device before summing data frames, with a built-in Pandas feature. Interpolation is shown in \ref{fig:interpolated} as a graph.
 
 \subsubsection{Visual Takeaway}
-This tool created most of the images shown in section \ref{Results}. A few other researchers such as Frawley's have used this tool for data visualization. The grapher provides real-time or historical graphs on any in the database device for individual analysis or comparison with little effort or time. Additional features from Plotly also provides an easy way to format graphs for presentations or papers.
+This tool created most of the images shown in Chapter \ref{Results}. A few other researchers, including Frawley have used this tool for data visualization. The grapher provides real-time or historical graphs on any device in the database with little effort. Additional features from Plotly also provides an easy way to format graphs for presentations or papers.
 
 The summation feature can simplify the graph and provide a more holistic view of power usage, making it easier to spot patterns. In this paper, the summation feature is used to simulate the concept of a household's ``powerline'' where all energy usage would be summed up into one power meter.
 
 \subsubsection{Limitations}
 As this tool was created entirely for research purposes, there are some edge cases that it fails to handle.
 
-When the database has too many connections, the software refuses to connect, and the grapher will not work. When graphing in real time, the grapher makes a new connection for each query. If a query fails, connections can quickly build up.
+When the database has too many connections, the grapher refuses to connect, and the grapher will not work. When graphing in real time, the grapher makes a new connection for each query. If a query hangs in the graphing tool in live mode, connections can quickly build up as the grapher continually makes a new connection every second without the previous queries closing.
 
-The graphing tool also slows as the time frame requested increases. We have noticed a slow down for queries with time frames longer than seven hours. In the static graphing mode, the tool slows down before graphing the information. However, in real time graphing mode, the tool makes many slow queries, eventually causing too many connections to the database and undefined behavior.
+The graphing tool also slows as the time frame increases. We have noticed a slow down for queries with time frames longer than seven hours. In the static graphing mode, the tool slows down before graphing the information. However, in real time graphing mode, the tool makes many slow queries, eventually causing too many connections to the database and undefined behavior.
 
-The graphing tool uses a lookup table that maps the IP address of the device to the corresponding name given to the WeMos. Because we manually create the lookup table, when any of these fields change, the graphing is not able to find the device. In some cases, this causes the graphing tool to crash. To solve this, the user must manually change the IP addresses defined in the lookup table in lines 23-39 shown in listing \ref{lst:ipLookup} below.
-
-To figure out the new IP address for the table, the user must perform a SQL query in the time frame that a device is doing something and manually examine the network traffic to see which IP has the highest network throughput. With this method, we had to ensure only one device was in use so that an IP address for another device would not be confused for the current device.
+The graphing tool uses a lookup table that maps the IP address of the device to the corresponding name given to the WeMos. Because we manually create the lookup table, when any of the IoT device's IP changes, the graphing tool is not able to find the device. In some cases, this causes the graphing tool to crash. To solve this, the user must manually change the IP addresses defined in the lookup table in lines 23-39 shown in listing \ref{lst:ipLookup} below.
 
 \begin{minipage}{\textwidth}
     \begin{lstlisting}[label={lst:ipLookup},caption={IP lookup table in real time IoT grapher.}]
