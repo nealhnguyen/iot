@@ -129,7 +129,7 @@ Organization streamlined the logging process overall; debugging network and conn
 
 \section{Software}
 \label{software}
-This section covers the software components used to control the IoT test bed. It discusses the scripts for logging power and network traffic, the database information, and the python script for viewing the database.
+This section covers the software components used to keep track of the IoT test bed, the scripts for logging power and network traffic, and information about the database.
 
 \subsection{Wireless WAP Code}
 To turn the NUC into a wireless access point, we used a create\_ap script \cite{oblique_2017}. This script takes in the desired network name, Wi-Fi password, wireless interface, and turns the NUC into a wireless access point. We later found that, with/ newer versions of Ubuntu, there is a built-in feature for creating a hotspot through a wireless interface on the device \cite{m_2016}. We used this feature to simplify the number of programs running and instead have the OS handle the hotspot. As discussed in Section \ref{Wireless Access Point} we eventually had to switch to an external antenna and rerun the script to set the USB antenna as the WAP wireless interface.
@@ -393,7 +393,7 @@ The only security camera we worked with was the Eray Security Camera.
 
 Whenever interfacing with this device, we used the device through the app NVAS2 \cite{nvas2} on the iPad for at least 2 minutes. Usage included streaming video from the camera to iPad to view it. We also controlled the camera through the app with pan and tilt commands. When done experimenting with the security camera, we disconnected the tablet from the camera by using the ``end stream'' button in the NVAS2 app.
 
-\subsection{realtimeIoTGrapher.py}
+\section{realtimeIoTGrapher.py}
 \label{realtimeIoTGrapher.py}
 
 This section covers a visual tool I created to look for trends. Originally, for trend analysis, we queried the database for the necessary data, copied the data over to Google Sheets, created the necessary formulas, graphed the network and power usage over time, and finally analyzed this graph. The tables and formulas are shown in Figure \ref{fig:excelLogging}. This process was tedious and time-consuming because we had to manually format an SQL query, entering unique time values and the IP address of the device. Copying large datasets from SQL into Google Sheets also causes lag in the browser.
