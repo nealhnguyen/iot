@@ -10,7 +10,7 @@ In another security flaw, one of the largest IoT cybersecurity attacks, Mirai, w
 
 \section{Previous Work}
 \label{Previous Work}
-This section presents and analyzes related works on the topic of characterizing IoT devices. It presents the previous works individually. Because these papers are similar to each other, commentary on how their work is different and useful to this paper is covered in section \ref{Scope}.
+This section presents and analyzes related works on the topic of characterizing IoT devices. It presents the previous works individually. Because these papers are similar to each other, commentary on how their work is different and useful to this paper is covered in Section \ref{Scope}.
 
 \subsection{An Analysis of Home IoT Network Traffic and Behaviour}
 \label{homeIoTPaper}
@@ -34,13 +34,13 @@ Frawley's paper documents the steps necessary to construct a reliable IoT testbe
 
 \section{Scope}
 \label{Scope}
-The paper from subsection \ref{homeIoTPaper} most closely matches this paper. The authors have the same overall idea to collect network data and then use it to analyze metadata surrounding the networks. Our work expands on this concept by contributing a portable database consisting of 10 months of data rather than 22 days of data. This paper adds more devices in our study and focuses more on device power/network usage over time rather than specific network packet information.
+The paper from Subsection \ref{homeIoTPaper} most closely matches this paper. The authors have the same overall idea to collect network data and then use it to analyze metadata surrounding the networks. Our work expands on this concept by contributing a portable database consisting of 10 months of data rather than 22 days of data. This paper adds more devices in our study and focuses more on device power/network usage over time rather than specific network packet information.
 
-Like the paper from subsection \ref{ProfilIoTPaper}, this paper also focuses on classification of devices from data. Instead of using machine learning techniques on network data, this paper focuses on manual analysis, looking for spikes, the height of the spike, the length of the power spike, and other graphical heuristics.
+Like the paper from Subsection \ref{ProfilIoTPaper}, this paper also focuses on classification of devices from data. Instead of using machine learning techniques on network data, this paper focuses on manual analysis, looking for spikes, the height of the spike, the length of the power spike, and other graphical heuristics.
 
 Compared to the paper in \ref{homeIoTPaper} and paper in \ref{ProfilIoTPaper}, this paper adds power usage over time to the data set. The two papers mentioned only focus on network traffic. This paper also puts a significant emphasis on creating an extensive database rather than a smaller set of data to create graphs on network and power usage over time.
 
-This paper is a continuation of the third paper in subsection \ref{frawleyPaper}. Due to overlap between these two works, certain aspects of the IoT testbed setup and usage is only covered in cursory detail here. The reader is advised to access Frawley's work for full information. We both assembled the IOT test bed and interacted with the devices on a daily basis to simulate regular usage. We both also performed a preliminary analysis of the device network and power usage together.
+This paper is a continuation of the third paper in Subsection \ref{frawleyPaper}. Due to overlap between these two works, certain aspects of the IoT testbed setup and usage is only covered in cursory detail here. The reader is advised to access Frawley's work for full information. We both assembled the IOT test bed and interacted with the devices on a daily basis to simulate regular usage. We both also performed a preliminary analysis of the device network and power usage together.
 
 The unique contribution of this work is its analysis of IoT device power usage and the introduction of a custom data visualization tool that attaches to the database. This paper focuses on a select few devices, analyzing their startup, idle, and in use network and power usage over time. I compare the smart speakers' network and power usage and show that it is likely possible to identify a smart speaker through analysis of the powerline over time.
 

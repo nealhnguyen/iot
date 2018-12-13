@@ -3,7 +3,7 @@
 To log and analyze network and power usage for our IoT devices, we set up an IoT testbed. This chapter documents the setup process for each IoT device, the logging process, how those two things resulted in the IoT testbed, and the software created to analyze the logged data.
 
 \section{IoT Testbed Overview}
-The flow diagram in figure \ref{fig:network} outlines the IoT test bed constructed for this project. IoT devices pull power from the outlets through the smart switches, which log the power usage, and the WAP (Wireless Access Point) queries the smart switches for that data and pushes it to an AWS (Amazon Web Services)\cite{rds} MySQL\cite{mysql} database as an entry in the `power' table.
+The flow diagram in Figure \ref{fig:network} outlines the IoT test bed constructed for this project. IoT devices pull power from the outlets through the smart switches, which log the power usage, and the WAP (Wireless Access Point) queries the smart switches for that data and pushes it to an AWS (Amazon Web Services)\cite{rds} MySQL\cite{mysql} database as an entry in the `power' table.
 
 The wireless network provided through the WAP intercepts network packets of the IoT devices connected to it, parses them into power and network entries, and pushes them to the database. Finally, for analysis, a user can run a python script called realTimeGrapher.py, which pulls from the database and graphs this data in real time or from set intervals in the past.
 
@@ -40,7 +40,7 @@ Smart power plugs are pass-through outlets that can be controlled/communicate wi
 
 We used the Belkin WeMo Insight. We used smart outlets in general because they're affordable. We chose the WeMo insights specifically because of the Python bindings.
 
-When setting these smart plugs up, we named each smart plug based on the device connected to it so that when we pull power information with our scripts, we can easily relate plug data to a specific IoT device. This informal naming led to issues when the wrong device is connected to the wrong smart plug, as discussed in section \ref{realtimeIoTGrapher.py}
+When setting these smart plugs up, we named each smart plug based on the device connected to it so that when we pull power information with our scripts, we can easily relate plug data to a specific IoT device. This informal naming led to issues when the wrong device is connected to the wrong smart plug, as discussed in Section \ref{realtimeIoTGrapher.py}
 
 \subsection{Wireless Access Point}
 \label{Wireless Access Point}
@@ -50,7 +50,7 @@ The NUC's built-in wireless interface is very slow. The throughput when using th
 
 \subsection{Devices}
 \label{Devices}
-This section goes over the smart speakers, streaming devices, video game consoles, tablets, security cameras, or other devices in the IoT testbed as listed in figure \ref{tab:devices}. These devices were included based on their popularity, as the goal of master's thesis is to build a data set from common household IoT items.
+This section goes over the smart speakers, streaming devices, video game consoles, tablets, security cameras, or other devices in the IoT testbed as listed in Figure \ref{tab:devices}. These devices were included based on their popularity, as the goal of master's thesis is to build a data set from common household IoT items.
 
 \begin{table}[H]
     \centering
@@ -123,7 +123,7 @@ After the logging system was set up (WeMo for power usage, NUC for network traff
 
 We plugged each device into their corresponding WeMo. Then, each device was set up through their corresponding app. Within that process, we connected the IoT device to the NUC for WiFi and created an account for the IoT device with the emails covered in the previous paragraph.
 
-We set up each device in waves, taking around a week to set up most IoT devices. Incremental device setup with no planned organization resulted in a messy work environment, which made it difficult to match a device to it is corresponding smart plug. After a month of data logging in a disorganized scheme, it became difficult to keep track of each device. The WeMos were also placed in an inefficient way that covered up some ports, causing us to run out of ports for new WeMos to connect to. We unplugged everything, renamed the WeMos, organized the wiring, and organized the location of each smart device resulting in the setup in figures \ref{fig:wemo} and \ref{fig:devices}. With limited power strips, the organization helped maximize power ports. We also faced the button for each power plug towards the user so that we could quickly notice whether the power plugs were on or off.
+We set up each device in waves, taking around a week to set up most IoT devices. Incremental device setup with no planned organization resulted in a messy work environment, which made it difficult to match a device to it is corresponding smart plug. After a month of data logging in a disorganized scheme, it became difficult to keep track of each device. The WeMos were also placed in an inefficient way that covered up some ports, causing us to run out of ports for new WeMos to connect to. We unplugged everything, renamed the WeMos, organized the wiring, and organized the location of each smart device resulting in the setup in Figures \ref{fig:wemo} and \ref{fig:devices}. With limited power strips, the organization helped maximize power ports. We also faced the button for each power plug towards the user so that we could quickly notice whether the power plugs were on or off.
 
 Organization streamlined the logging process overall; debugging network and connection issues were much simpler with an ordered setup. We could quickly identify redundant devices (there are two Echo Dots and Eufy Genies), run procedures on groups of devices, and determine the corresponding smart plug for each device.
 
@@ -132,14 +132,14 @@ Organization streamlined the logging process overall; debugging network and conn
 This section covers the software components used to control the IoT test bed. It discusses the scripts for logging power and network traffic, the database information, and the python script for viewing the database.
 
 \subsection{Wireless WAP Code}
-To turn the NUC into a wireless access point, we used a create\_ap script \cite{oblique_2017}. This script takes in the desired network name, Wi-Fi password, wireless interface, and turns the NUC into a wireless access point. We later found that, with/ newer versions of Ubuntu, there is a built-in feature for creating a hotspot through a wireless interface on the device \cite{m_2016}. We used this feature to simplify the number of programs running and instead have the OS handle the hotspot. As discussed in section \ref{Wireless Access Point} we eventually had to switch to an external antenna and rerun the script to set the USB antenna as the WAP wireless interface.
+To turn the NUC into a wireless access point, we used a create\_ap script \cite{oblique_2017}. This script takes in the desired network name, Wi-Fi password, wireless interface, and turns the NUC into a wireless access point. We later found that, with/ newer versions of Ubuntu, there is a built-in feature for creating a hotspot through a wireless interface on the device \cite{m_2016}. We used this feature to simplify the number of programs running and instead have the OS handle the hotspot. As discussed in Section \ref{Wireless Access Point} we eventually had to switch to an external antenna and rerun the script to set the USB antenna as the WAP wireless interface.
 
 \subsection{sniff.py}
 \label{sniff.py}
 Sniff.py runs a thread for power logging and a thread for network logging. As each logger runs, it writes the network packets and power information to a MySQL database hosted on AWS through the python MySQL client \cite{mysqlclient} library. If the database connection is lost, the script automatically reconnects.
 
 \subsubsection{Network Logging}
-Network Logging begins by opening a socket on the wireless interfaces connected. All IP packets are sniffed through this socket connection as shown in listing \ref{lst:sock}.
+Network Logging begins by opening a socket on the wireless interfaces connected. All IP packets are sniffed through this socket connection as shown in Listing \ref{lst:sock}.
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -152,7 +152,7 @@ while True:
 \end{lstlisting}
 \end{minipage}
 
-Once we have sniffed a packet, we can obtain the metadata from the hex dump. We preserve this hex dump in case we want to extract more information from it later. From each hex dump, we extract and store the source IP, source host, destination IP, destination host, time, size, type, protocol, source port, destination port, source host, and destination host. We explain what each fields are in section \ref{Database}.
+Once we have sniffed a packet, we can obtain the metadata from the hex dump. We preserve this hex dump in case we want to extract more information from it later. From each hex dump, we extract and store the source IP, source host, destination IP, destination host, time, size, type, protocol, source port, destination port, source host, and destination host. We explain what each fields are in Section \ref{Database}.
 
 \subsubsection{Power Logging}
 In addition to network traffic, we also log the power usage. To obtain this information, we rely heavily on the Belkin WeMo Insights.
@@ -161,7 +161,7 @@ We used the PyWemo python script \cite{pywemo} to read power usage from the WeMo
 
 Once the script queries the WeMo for its power information, we relate the WeMo to the device connected to it by extracting the name of the WeMo. This information is used when pushing power data to our database.
 
-One issue with PyWemo and the Belkin WeMos is that they would sometimes disconnect, and the script would miss power data. To handle this issue, the script rescans for WeMos until it finds all 16 WeMos in our testbed. The rescan code for this is shown below in listing \ref{lst:wemoRescanCode}
+One issue with PyWemo and the Belkin WeMos is that they sometimes disconnect, causing the script to miss power data. To handle this issue, the script rescans for WeMos until it finds all 16 WeMos in our testbed. The rescan code for this is shown below in Listing \ref{lst:wemoRescanCode}
 
 \noindent
 \begin{minipage}{\textwidth}
@@ -186,7 +186,7 @@ One issue with PyWemo and the Belkin WeMos is that they would sometimes disconne
 \subsection{Database}
 \label{Database}
 
-To store all the results of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space. The database contains two tables, one for the network traffic and one for the power usage data. To interface with our database, we used a combination of the RealTimeIoTGrapher from section \ref{realtimeIoTGrapher.py}, Navicat \cite{navicat}, and MySQL’s command line tool \cite{mysqlCommandline}.
+To store all the results of the sniffed packets and power data, we push the data to a MySQL database hosted on an Amazon AWS server. As of writing, the database holds 172,445,929 entries that take up 184.94 GB of space. The database contains two tables, one for the network traffic and one for the power usage data. To interface with our database, we used a combination of the RealTimeIoTGrapher from Section \ref{realtimeIoTGrapher.py}, Navicat \cite{navicat}, and MySQL’s command line tool \cite{mysqlCommandline}.
 
 \subsubsection{Network Table}
 \label{Network Table}
@@ -212,7 +212,7 @@ The largest part of our database is the IP network table. It is currently 179.1 
     \end{tabular}
     \label{tab:netcol}
     \end{table}
-Common SQL commands we used for our analysis include those shown in listings \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}. The most useful commands generally required examining total throughput or device throughput using ROLLUP, shown in figure \ref{fig:navicatRollup}.
+Common SQL commands we used for our analysis include those shown in listings \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}. The most useful commands generally required examining total throughput or device throughput using ROLLUP, shown in Figure \ref{fig:navicatRollup}.
 
 \begin{figure}[H]
     \centering
@@ -223,11 +223,11 @@ Common SQL commands we used for our analysis include those shown in listings \re
 
 The hex dump column drastically increases the size of each entry in the network table. However, as a raw network packet, it is very flexible and can be manipulated for many more use cases than the targeted columns we have. This flexibility is useful for future research that may require data we did not explicitly pull out for this project.
 
-In the database, each device can be tracked down by looking for the IP address of that device in the source or destination columns. However, due to the use of dynamic IPs in our network setup a single device can be under multiple IPs within the table. We ignored this issue until a query for a particular IP stopped working. At which point we would invoke a command on the device whose IP changed to flood the database with packets from that device, query the database in the time frame of the command, and obtain the new IP. We logged all devices and their current IP in a Google Sheets \cite{googleSheets} file covered in subsection \ref{IP History}.
+In the database, each device can be tracked down by looking for the IP address of that device in the source or destination columns. However, due to the use of dynamic IPs in our network setup a single device can be under multiple IPs within the table. We ignored this issue until a query for a particular IP stopped working. At which point we invoke a command on the device whose IP changed to flood the database with packets from that device, query the database in the time frame of the command, and obtain the new IP. We logged all devices and their current IP in a Google Sheets \cite{googleSheets} file covered in Subsection \ref{IP History}.
 
 \subsubsection{Power Table}
 
-The power table holds the most critical data for the research discussed in Chapter \ref{Results}, and I refer to it for the majority of the paper's findings. The size of this table is much smaller than the network table. It contains 5.84 GB of data and 61,240,189 entries in the database. The significant difference in size between the IP table and power table is because each device only produces one power entry every second. The columns of the power table are shown in figure \ref{tab:powcol}.
+The power table holds the most critical data for the research discussed in Chapter \ref{Results}, and I refer to it for the majority of the paper's findings. The size of this table is much smaller than the network table. It contains 5.84 GB of data and 61,240,189 entries in the database. The significant difference in size between the IP table and power table is because each device only produces one power entry every second. The columns of the power table are shown in Figure \ref{tab:powcol}.
 
 \begin{table}[H]
     \centering
@@ -245,7 +245,7 @@ The power table holds the most critical data for the research discussed in Chapt
     \label{tab:powcol}
     \end{table}
 
-When working with this table, we generally query for a range of power packets in a given time frame. We do this for all devices, a subset of devices, or a single device. Some of the commands and results are shown in figures \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}.
+When working with this table, we generally query for a range of power packets in a given time frame. We do this for all devices, a subset of devices, or a single device. Some of the commands and results are shown in Figures \ref{fig:navicatPowerQuery} and \ref{fig:navicatNetworkQuery}.
 
 \begin{figure}[H]
     \centering
@@ -261,9 +261,9 @@ When working with this table, we generally query for a range of power packets in
     \label{fig:navicatNetworkQuery}
 \end{figure}
 
-Within the power table, the name field is extracted from the WeMo. This can cause issues if the wrong device is connected to a WeMo. There is no way to check for this besides manual examination, which we did after a few weeks, resetting all devices and causing a temporary void in power data. Manual examination required turning the WeMo off from the iPad (where the WeMo name is displayed) and looking to see what device turned off. When we reset all devices, we also renamed some of the WeMos. For example, we changed ``echoDot'' to ``Echo Dot''. This way, all devices would follow the naming convention of separating words with spaces and capitalizing each word.
+Within the power table, the name field is extracted from the WeMo. This can cause issues if the wrong device is connected to a WeMo. There is no way to check for this besides manual examination, which we did after a few weeks, resetting all devices and causing a temporary void in power data. Manual examination required turning the WeMo off from the iPad (where the WeMo name is displayed) and looking to see what device turned off. When we reset all devices, we also renamed some of the WeMos. For example, we changed ``echoDot'' to ``Echo Dot''. This way, all devices follow the naming convention of separating words with spaces and capitalizing each word.
 
-The sampling frequency for the power table is also low and missing some points. Because the WeMo network connection is unstable, the script to query power data is unable to get power data every second. To handle missing points, I interpolate them as shown in subsection \ref{realtimeIoTGrapher.py}.
+The sampling frequency for the power table is also low and missing some points. Because the WeMo network connection is unstable, the script to query power data is unable to get power data every second. To handle missing points, I interpolate them as shown in Subsection \ref{realtimeIoTGrapher.py}.
 
 \subsection{Device Inventory}
 \label{Device Inventory}
@@ -287,7 +287,7 @@ To keep track of all devices and important details about them, we log a device's
 
 \subsection{IP History}
 \label{IP History}
-As mentioned in subsection \ref{Wiring and Configuration}, the IP addresses of each device are dynamic. They change over time as DHCP assigns new IP addresses to a device. A Google Sheets file is used to keep track of each device's IP address as it changes as shown in table \ref{tab:ipHistory}. The `Date Noticed' column is the date that the IP address was noted to have changed. The `Device' is the name of the device that changed IP address. The `Old IP' and `New IP' are the IP addresses for the device before and at that current time respectively. Newly added devices will have an `Old IP' entry as `None'.
+As mentioned in Subsection \ref{Wiring and Configuration}, the IP addresses of each device are dynamic. They change over time as DHCP assigns new IP addresses to a device. A Google Sheets file is used to keep track of each device's IP address as it changes as shown in table \ref{tab:ipHistory}. The `Date Noticed' column is the date that the IP address was noted to have changed. The `Device' is the name of the device that changed IP address. The `Old IP' and `New IP' are the IP addresses for the device before and at that current time respectively. Newly added devices will have an `Old IP' entry as `None'.
 
 \begin{table}[H]
     \centering
@@ -375,7 +375,7 @@ Whenever interfacing with these devices, we queried for the weather and the news
 \subsubsection{Video Game Consoles}
 When interfacing with these devices, we played a game on the device for at least 15 minutes. Every week, we also browsed for games on the game store and downloaded free demos.
 
-Afterward, we would turn off the Xbox and put the Nintendo Switch into sleep mode. The Nintendo Switch was only set to sleep because it can only shut down when disconnected from the dock.
+Afterward, we turn off the Xbox and put the Nintendo Switch into sleep mode. The Nintendo Switch was only set to sleep because it can only shut down when disconnected from the dock.
 
 \subsubsection{Streaming Devices}
 When interfacing with these devices, we watched YouTube for at least three minutes.
@@ -396,9 +396,9 @@ Whenever interfacing with this device, we used the device through the app NVAS2 
 \subsection{realtimeIoTGrapher.py}
 \label{realtimeIoTGrapher.py}
 
-This section covers a visual tool I created to look for trends. Originally, for trend analysis, we queried the database for the necessary data, copied the data over to Google Sheets, created the necessary formulas, graphed the network and power usage over time, and finally analyzed this graph. The tables and formulas are shown in figure \ref{fig:excelLogging}. This process was tedious and time-consuming because we had to manually format an SQL query, entering unique time values and the IP address of the device. Copying large datasets from SQL into Google Sheets would also lag the browser.
+This section covers a visual tool I created to look for trends. Originally, for trend analysis, we queried the database for the necessary data, copied the data over to Google Sheets, created the necessary formulas, graphed the network and power usage over time, and finally analyzed this graph. The tables and formulas are shown in Figure \ref{fig:excelLogging}. This process was tedious and time-consuming because we had to manually format an SQL query, entering unique time values and the IP address of the device. Copying large datasets from SQL into Google Sheets also causes lag in the browser.
 
-To address these problems, I created a Python script that automatically forms graphs, including the one shown in figure, \ref{fig:interpolated} when given a time range and the desired devices. This automation sped up the analysis process and provided extra features covered in section \ref{Features}.
+To address these problems, I created a Python script that automatically forms graphs, including the one shown in figure, \ref{fig:interpolated} when given a time range and the desired devices. This automation sped up the analysis process and provided extra features covered in Section \ref{Features}.
 
 This Python script leverages the Plotly \cite{plotly} library, which, given data, graphs it onto a local web page for viewing. Plotly comes with many useful tools for further analysis and can be extended to run on a public web page for public viewing.
 
@@ -423,11 +423,11 @@ I plan to distribute this tool with our database so that researchers can view th
 
 This section discusses the features that RealTimeIoTGrapher (grapher) provides.
 
-At its core, this program automates the creation of the graph shown in figure \ref{fig:tvThroughput}. The user can specify a time range that the graph should cover and what devices to graph. By default, the graph shows power, input traffic, output traffic, and total network traffic over the time range specified.
+At its core, this program automates the creation of the graph shown in Figure \ref{fig:tvThroughput}. The user can specify a time range that the graph should cover and what devices to graph. By default, the graph shows power, input traffic, output traffic, and total network traffic over the time range specified.
 
 The grapher also annotates the data by including a line denoting the average for each of the traces over the time range currently displayed. It also annotates the maximum and minimum values in the time range for each trace. The grapher can also display information in real time for any specified window size (update live showing ten minutes at a time), updating every second.
 
-The Plotly libraries also provide useful tools when displaying these IoT graphs. It is possible to zoom in and out the displayed graph, select specific traces for viewing, save the graph, and hover over data points to display the specific value. Finally, once a graph is saved as shown in figure \ref{fig:plotlySave} Plotly allows further editing of the graph so that it is formatted the way the user wants as shown in figure \ref{fig:plotlyEdit}.
+The Plotly libraries also provide useful tools when displaying these IoT graphs. It is possible to zoom in and out the displayed graph, select specific traces for viewing, save the graph, and hover over data points to display the specific value. Finally, once a graph is saved as shown in Figure \ref{fig:plotlySave} Plotly allows further editing of the graph so that it is formatted the way the user wants as shown in Figure \ref{fig:plotlyEdit}.
 
 \begin{figure}[H]
     \centering
@@ -465,7 +465,7 @@ The Plotly libraries also provide useful tools when displaying these IoT graphs.
     \end{lstlisting}
 \end{minipage}
 
-To reduce local computation, the grapher offloads work to the server through an SQL query. ROLLUP provides nested queries and causes the query to sum up the data by time for each type of packet. When querying for network data, the grapher performs an SQL ROLLUP to sum the incoming and outgoing network throughput to obtain the total throughput. This query is formatted as shown in listing \ref{lst:rollup}.
+To reduce local computation, the grapher offloads work to the server through an SQL query. ROLLUP provides nested queries and causes the query to sum up the data by time for each type of packet. When querying for network data, the grapher performs an SQL ROLLUP to sum the incoming and outgoing network throughput to obtain the total throughput. This query is formatted as shown in Listing \ref{lst:rollup}.
 
 To simplify data handling in the grapher, the grapher stores queried data into Pandas \cite{pandas}. Pandas is the industry standard library for dealing with tabular data. It integrates with SQL and has builtin functions to query directly from a database into a Pandas object. Pandas provides easy key, value scheme for indexing by column or row and for parsing the data.
 
@@ -483,12 +483,12 @@ To simplify data handling in the grapher, the grapher stores queried data into P
     \label{fig:interpolated}
 \end{figure}
 
-The grapher can also sum all power traces into one single trace. Originally, when summing the graphs, it would add the two Pandas data frames that represent each trace, and graph the result, shown in figure \ref{fig:noninterpolated}. However, the WeMo does not always sample every second. This is an issue if, at some time, one device X has a power point, but another device does not. The summation counts the empty data point as 0, resulting in an erroneous sum for certain frames. This was solved by interpolating data for every second for each device before summing data frames, with a built-in Pandas feature. Interpolation is shown in \ref{fig:interpolated} as a graph.
+The grapher can also sum all power traces into one single trace. Originally, when summing the graphs, it would add the two Pandas data frames that represent each trace, and graph the result, shown in Figure \ref{fig:noninterpolated}. However, the WeMo does not always sample every second. This is an issue if, at some time, one device X has a power point, but another device does not. The summation counts the empty data point as 0, resulting in an erroneous sum for certain frames. This was solved by interpolating data for every second for each device before summing data frames, with a built-in Pandas feature. Interpolation is shown in \ref{fig:interpolated} as a graph.
 
 \subsubsection{Visual Takeaway}
 This tool created most of the images shown in Chapter \ref{Results}. A few other researchers, including Frawley, have used this tool for data visualization. The grapher provides real-time or historical graphs on any device in the database with little effort. Additional features from Plotly also provides an easy way to format graphs for presentations or papers.
 
-The summation feature can simplify the graph and provide a more holistic view of power usage, making it easier to spot patterns. In this paper, the summation feature is used to simulate the concept of a household's ``powerline'' where all energy usage would be summed up into one power meter.
+The summation feature can simplify the graph and provide a more holistic view of power usage, making it easier to spot patterns. In this paper, the summation feature is used to simulate the concept of a household's ``powerline'' where all energy usage is be summed up into one power meter.
 
 \subsubsection{Limitations}
 As this tool was created entirely for research purposes, there are some edge cases that it fails to handle.
@@ -497,7 +497,7 @@ When the database has too many connections, the grapher refuses to connect, and 
 
 The graphing tool also slows as the time frame increases. We have noticed a slow down for queries with time frames longer than seven hours. In the static graphing mode, the tool slows down before graphing the information. However, in real time graphing mode, the tool makes many slow queries, eventually causing too many connections to the database and undefined behavior.
 
-The graphing tool uses a lookup table that maps the IP address of the device to the corresponding name given to the WeMos. Because we manually create the lookup table, when any of the IoT device's IP changes, the graphing tool is not able to find the device. In some cases, this causes the graphing tool to crash. To solve this, the user must manually change the IP addresses defined in the lookup table in lines 23-39 shown in listing \ref{lst:ipLookup} below.
+The graphing tool uses a lookup table that maps the IP address of the device to the corresponding name given to the WeMos. Because we manually create the lookup table, when any of the IoT device's IP changes, the graphing tool is not able to find the device. In some cases, this causes the graphing tool to crash. To solve this, the user must manually change the IP addresses defined in the lookup table in lines 23-39 shown in Listing \ref{lst:ipLookup} below.
 
 \begin{minipage}{\textwidth}
     \begin{lstlisting}[label={lst:ipLookup},caption={IP lookup table in real time IoT grapher.}]

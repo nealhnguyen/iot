@@ -1,18 +1,16 @@
 \chapter{Results and Discussion}
 \label{Results}
-This chapter covers different network and power usage patterns for the IoT devices in the testbed. First, section \ref{swappingSwitch} informally compares the smart switches between devices to show that they are accurate for this research's purposes. Section \ref{wholeDB} covers the percentage of each protocol in the database for an overall view of home IoT devices. Section \ref{General Analysis} covers smart speakers' and streaming devices' network and power use while idle, in use, and during first boot. Sections \ref{wholeDB} and \ref{General Analysis} serve as precursory analysis to fingerprint devices and give example usages of the database and visualizer tool.
+This chapter covers different network and power usage patterns for the IoT devices in the testbed. First, Section \ref{swappingSwitch} informally compares the smart switches between devices to confirm that they are accurate enough for this research's purposes. Section \ref{General Analysis} covers smart speaker and streaming device network and power use while idle, in use, and during first boot. Section \ref{General Analysis} serves as precursory analysis to fingerprint devices and give example uses of the database and visualizer tool.
 
-After general analysis, section \ref{Power Analysis on Smart Speakers} shows how the presence of a user in their house and a smart device can be determined form power traces. This starts the focus of the research to use a shared power line (simulation for a home power line) to determine what smart speaker is in use visually. Sections \ref{sumPowerGraph} and \ref{sumPowerGraphWithNoise} cover summed power graphs of the smart speakers with and without noise from high power household devices. Finally, section \ref{smartSpeakerComparisonSection} ends with a comparison between smart speakers for further general analysis.
-
-Within each section, after presenting the results, the paper discusses the implications of the data. The results and discussion presented are visual and informal, but strongly support the claims they make.
+After general analysis, Section \ref{Power Analysis on Smart Speakers} shows how a power trace may highlight the presence of a user in their home. Sections \ref{sumPowerGraph} and \ref{sumPowerGraphWithNoise} cover summed power graphs of the smart speakers with and without noise from high power household devices. Finally, Section \ref{smartSpeakerComparisonSection} ends with a comparison between smart speakers for further general analysis.
 
 When obtaining data, most of the packets are encrypted, so the data presented focuses on metadata such as size, protocol, source IP, and destination IP. For power analysis, we focus on the power used at each second.
 
 \section{Swapping the Power Switch}
 \label{swappingSwitch}
-To check if the smart switch voltage readings are accurate, we swapped various devices with various power switches. Some examples are shown \ref{fig:swapEcho1Home}, \ref{fig:swapEufy1Echo1}, and \ref{fig:swapEufy1Home}. After swapping the switches, each device would take some time to start up,  the colored box in figures \ref{fig:swapEcho1Home}, \ref{fig:swapEufy1Echo1}, and \ref{fig:swapEufy1Home} highlight this time.
+To check if the smart switch voltage readings are accurate, we swapped various devices with various power switches. Some examples are shown in Figures \ref{fig:swapEcho1Home}, \ref{fig:swapEufy1Echo1}, and \ref{fig:swapEufy1Home}. After swapping the switches, each device takes some time to start up, the colored boxes in Figures \ref{fig:swapEcho1Home}, \ref{fig:swapEufy1Echo1}, and \ref{fig:swapEufy1Home} highlight this time.
 
-In every case, the traces swapped as we swapped the device connected to each smart switch. This informal sanity check confirmed accurate enough power switches for visual analysis.
+In every case, the traces swapped as we swapped the device connected to each smart switch. This informal sanity check confirmed that the power switches were precise enough to enable basic device comparisons.
 
 \begin{figure}[H]
     \centering
@@ -35,28 +33,14 @@ In every case, the traces swapped as we swapped the device connected to each sma
     \label{fig:swapEufy1Home}
 \end{figure}
 
-\section{Whole Database}
-\label{wholeDB}
-When examining the whole database, most of the traffic is TCP packets. The second most significant protocol is UDP. This figure is an example of some information the database provides.
-
-It shows the percentage of certain protocols that would pass through a typical home, adding to the fingerprint of IoT devices. Refer to Frawley's paper for more information on trends in the whole database\ref{frawleyPaper}.
-
-\label{Whole Database}
-\begin{figure}[H]
-  \centering
-    \includegraphics[width=1\textwidth]{tcpudp}
-  \caption{Internet and Transport Layer Protocols in Database}
-  \label{fig:tcpudp}
-\end{figure}
-
 \section{General Analysis}
 \label{General Analysis}
 The figures shown in this section give examples of how the database and grapher tool is used. The figures also demonstrate a strong correlation between what the device is doing and its network/power usage, serving as data to fingerprint each smart speaker.
 
-Frawley's paper contains a more in-depth analysis of this section. His paper includes GeoIP \cite{maxmind} information from Cal Poly's ITS servers \cite{its} that highlight the locations and companies the network packets are sent to and received from. Frawley's paper also includes data of unencrypted packets being sent and received along with the text within them.
+Frawley's paper contains a more in-depth analysis of this topic. His paper includes GeoIP \cite{maxmind} information from Cal Poly's ITS servers \cite{its} that highlights the locations and companies the network packets are sent to and received from. Frawley's paper also includes data of unencrypted packets being sent and received along with the text within them.
 
 \subsection{Google Home Mini General Analysis}
-The Google Home Mini's idle traffic broadcasts SSDP (Simple Service Discovery Protocol) packets once every minute. The SSDP packets are a discovery request packet for every IoT device on the network that supports UPnP (Universal Plug and Play). At which point, devices such as the Echo Dot, Samsung TV, and the Chromebook respond with information about themselves in a .xml file. This XML file contains details regarding the device operating system and more. Google also sends encrypted TCP packets to Google every 10 minutes. Figure \ref{fig:home} shows the Google Home Mini's idle traffic. The large spikes are the encrypted TCP packets, and the smaller spikes are the SSDP/UPnP packets.
+The Google Home Mini's idle traffic broadcasts SSDP (Simple Service Discovery Protocol) packets once every minute. The SSDP packets are a discovery request packet for every IoT device on the network that supports UPnP (Universal Plug and Play). After devices such as the Echo Dot, Samsung TV, and the Chromebook receive an SSDP packet, they respond with information about themselves in a .xml file. This XML file contains details regarding the device operating system and more. Google also sends encrypted TCP packets to Google every 10 minutes. Figure \ref{fig:home} shows the Google Home Mini's idle traffic. The large spikes are the encrypted TCP packets, and the smaller spikes are the SSDP/UPnP packets.
 
 \begin{figure}[H]
   \centering
@@ -65,7 +49,7 @@ The Google Home Mini's idle traffic broadcasts SSDP (Simple Service Discovery Pr
   \label{fig:home}
 \end{figure}
 
-Figure \ref{fig:homequery} shows a graph of the Google Home Mini's network and power usage under various commands. The Google Home Mini is first asked for the news and then told to stop. After waiting for 40 minutes, we ask it for the weather forecast.
+Figure \ref{fig:homequery} shows a graph of the Google Home Mini's network and power usage while performing various commands. The Google Home Mini is first asked for the news and then told to stop. After waiting for 40 minutes, we ask it for the weather forecast.
 
 \begin{figure}[H]
   \centering
@@ -74,8 +58,8 @@ Figure \ref{fig:homequery} shows a graph of the Google Home Mini's network and p
   \label{fig:homequery}
 \end{figure}
 
-\subsubsection{Google Chrome Cast}
-Figure \ref{fig:ccboth} shows the Chrome Cast startup graph. On startup, the Chrome Cast shows an intro tutorial video and downloads a firmware update. After rebooting twice, it is ready to go.
+\subsubsection{Google Chromecast}
+Figure \ref{fig:ccboth} shows the Chromecast initial startup graph. On startup, the Chromecast shows an intro tutorial video and downloads a firmware update. After rebooting twice, it is ready to go.
 
 \begin{figure}[H]
   \centering
@@ -84,7 +68,7 @@ Figure \ref{fig:ccboth} shows the Chrome Cast startup graph. On startup, the Chr
   \label{fig:ccboth}
 \end{figure}
 
-Figure \ref{fig:ccstream} shows the Chrome Cast streaming graph. In this time frame, the chrome cast streams video in the marked box.
+Figure \ref{fig:ccstream} shows the Chromecast streaming graph. In this time frame, the Chromecast streams video in the marked box.
 
 \begin{figure}[H]
   \centering
@@ -93,11 +77,11 @@ Figure \ref{fig:ccstream} shows the Chrome Cast streaming graph. In this time fr
   \label{fig:ccstream}
 \end{figure}
 
-Additionally, the Chrome Cast idle graph is shown in figure \ref{fig:ccbg}. In this time frame, there are consistent spikes to the chrome cast every 2 minutes. During these spikes, the chrome cast is showing a new background that it downloads from Google Servers.
+Additionally, the Chromecast idle graph is shown in Figure \ref{fig:ccbg}. In this time frame, there are consistent spikes to the Chromecast every 2 minutes. During these spikes, the Chromecast is showing a new background that it downloads from Google Servers.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{chromecastbg}
+  \includegraphics[width=1\textwidth]{chromecastbg.png}
   \caption{Chromecast Idle Traffic}
   \label{fig:ccbg}
 \end{figure}
@@ -113,7 +97,7 @@ Additionally, the Chrome Cast idle graph is shown in figure \ref{fig:ccbg}. In t
 
 Figure \ref{fig:fireboth} shows the Amazon Fire Stick startup graph. On first boot, the fire stick downloads an update, reboots twice, then downloads certificates from Symantec and Verisign.
 
-When streaming, the Fire Stick increases throughput and power usage with a spike at the beginning and end of streaming in power usage as shown in figure \ref{fig:fsyt}.
+When streaming, the Fire Stick increases throughput and power usage with a spike at the beginning and end of streaming in power usage as shown in Figure \ref{fig:fsyt}.
 
 \begin{figure}[H]
   \centering
@@ -133,20 +117,19 @@ When streaming, the Roku's power usage and network throughput rise and stay at a
 \end{figure}
 
 \subsection{General Analysis Discussion}
-From all the figures in this section, there is a visual correlation between network/power usage and what each device is doing. During periodic updates, the smart speakers and streaming devices would have periodic network/power usage spikes as shown in figure \ref{fig:ccbg}. While streaming, the power/network usage would increase for the period of the stream as shown in \ref{fig:ccstream}, \ref{fig:fsyt}, and \ref{fig:rokuStreaming}. This strong correlation shows the value of the database and visualizer tool for visual pattern recognition. It also shows the viability of using network throughput/power usage over time to understand what a device is doing.
+From all the figures in this section, there is a visual correlation between network/power usage and what each device is doing. During periodic updates, the smart speakers and streaming devices have periodic network/power usage spikes as shown in Figure \ref{fig:ccbg}. While streaming, the power/network usage increases for the period of the stream as shown in \ref{fig:ccstream}, \ref{fig:fsyt}, and \ref{fig:rokuStreaming}. This strong correlation shows the value of the database and visualizer tool for IoT device analysis. It also indicates that it may be possible to use network throughput/power usage over time to understand what a device is doing.
 
 \section{Power Analysis on Smart Speakers}
 \label{Power Analysis on Smart Speakers}
+There is already significant analysis on network usage of IoT devices as shown in the previous works Section \ref{Previous Work}. This paper focuses on the smart speakers' power usage to focus the scope of research.
 
-After determining a strong correlation between network/power usage and device operation, this section begins to focus on power usage over time. There is already significant analysis on network usage as shown in the previous works section \ref{Previous Work}. This paper focuses on the smart speakers' power usage to focus the scope of research.
-
-This section first examines the power usage of the smart speakers separately before examining total power usage in section \ref{sumPowerGraph}. Subsection \ref{Baseline Speaker Power} examines the idle power of smart speakers separately, and how correlates to a specific smart speaker. Then subsection \ref{Smart Speaker Power Spikes When Asked for Weather} shows that through visual examination of a power trace of an individual smart speaker, we can tell what smart speaker is in use.
+This section first examines the power usage of the smart speakers separately before examining total power usage in Section \ref{sumPowerGraph}.
 
 \subsection{Echo Dot Brightness Sensor}
 \label{Echo Dot Brightness Sensor}
-One interesting finding from the Echo Dot is that it has a light monitor. When turning on the lights, the LEDs on the Echo Dot brighten to adapt. The brightness change causes the Echo Dot to use more idle power as shown in figure \ref{fig:echolights}.
+One interesting finding from the Echo Dot is that it has a light sensor When turning on the room lights, the LEDs on the Echo Dot brighten to adapt. The brightness change causes the Echo Dot to use more idle power as shown in Figure \ref{fig:echolights}.
 
-Figure \ref{fig:echolights} shows that the power usage of an Echo Dot can show if the lights are on in a house. This can help someone determine if someone is in their house or not or event what room they are in, introducing some privacy concerns.
+Figure \ref{fig:echolights} shows that the power usage of an Echo Dot can show if the lights are on in a house. This can help someone determine if someone is in their house or not or what room they are in, potentially introducing some privacy concerns.
 
 \begin{figure}[H]
     \centering
@@ -157,9 +140,9 @@ Figure \ref{fig:echolights} shows that the power usage of an Echo Dot can show i
 
 \subsection{Baseline Speaker Power}
 \label{Baseline Speaker Power}
-Once discovering how much a smart speaker's power usage can show, this section examines the power usage of each smart speaker while idle. Figure \ref{fig:baselineSpeakerPower} shows this from 1:00 AM to 2:30 AM when none of the devices are in use.
+To determine what else can be learned from a smart speaker's power usage, this section examines the idle power of each smart speaker. Figure \ref{fig:baselineSpeakerPower} shows this from 1:00 AM to 2:30 AM when none of the devices are in use.
 
-The Echo Dot 1 has the highest idle traffic as shown in the pink trace, the Echo Dot 2 has second highest idle traffic as shown in the green trace, the Eufy 1 and Eufy 2 have the same idle power usage as shown in the yellow and purple trace, then the Google Home has the lowest idle power usage as shown in the blue trace. With visual analysis, the smart speaker can be matched to idle power usage. But the power usages can overlap between the Echo Dot 2 and Eufys. This would make it difficult to differentiate them and shows this method to determine a device is difficult. Also, when summing the power usages together, these idle traces would disappear, with no way to differentiate what idle devices are contributing to the total power usage.
+The Echo Dot 1 has the highest idle power as shown in the pink trace, the Echo Dot 2 has second highest idle power as shown in the green trace, the Eufy 1 and Eufy 2 have roughly the same idle power usage as shown in the yellow and purple traces, and the Google Home has the lowest idle power usage as shown in the blue trace. With visual analysis, the smart speaker can be matched to idle power usage. But the power usages can overlap between the Echo Dot 2 and Eufys. This makes it difficult to differentiate them and shows this method to identify a device is difficult. Also, on a shared powerline where the all power use is combined, these idle traces disappear, with no way to differentiate what idle devices are contributing to the total power usage.
 
 \begin{figure}[H]
     \centering
@@ -170,9 +153,9 @@ The Echo Dot 1 has the highest idle traffic as shown in the pink trace, the Echo
 
 \subsection{Smart Speaker Power Spikes When Asked for Weather}
 \label{Smart Speaker Power Spikes When Asked for Weather}
-This section continues to see if a smart speaker can be determined from an individual power trace, focusing on traces while the device is in use. Figure \ref{fig:speakerWeatherSeperate}  shows this, where each device is asked for the weather four times.
+This section continues to see if a smart speaker can be determined from power by focusing on power characteristics while the devices are in use. Figure \ref{fig:speakerWeatherSeperate} shows the power data where each device is asked for the weather four times.
 
-In figure \ref{fig:speakerWeatherSeperate} there is a visual spike for each device while it is giving the weather forecast. Each device is highlighted while in use, showing four spikes. The Google Home was queried for the weather five times, thus containing an extra spike. From this, we can determine a Eufy trace if it has small 400 mW peak to peak spikes, the Google Home if there is a medium 600 mW peak to peak spikes, and the Echo Dot if there is a large 2,100 mW peak to peak spikes. This implies that a device can be determined from a power trace if the device is asked for the weather. The next section analyzes more use cases, and the traces are summed together to simulate a shared home powerline more closely.
+In Figure \ref{fig:speakerWeatherSeperate} there is a visual spike for each device while it is giving the weather forecast. Each device is highlighted while in use. The Google Home was queried for the weather five times and thus contains an extra spike. From this data, we can note a Eufy trace has 400 mW peak to peak spikes, the Google Home has 600 mW peak to peak spikes, and the Echo Dot has 2,100 mW peak to peak spikes. This difference in magnitude implies that a device can be determined from a power trace if the device is asked for the weather. The next section analyzes more use cases, and the traces are summed together to simulate a shared home powerline more closely.
 
 \begin{figure}[H]
     \centering
@@ -181,40 +164,37 @@ In figure \ref{fig:speakerWeatherSeperate} there is a visual spike for each devi
     \label{fig:speakerWeatherSeperate}
 \end{figure}
 
-This section highlights initial power findings, and how visual examination of a power graph over time gives a lot of information. Once discovering the insight, a power trace can provide, the research focused on the overarching goal to see if given a graph of a house's total power usage, is it possible to determine the device in use.
-
 \section{Summed Power Graph}
 \label{sumPowerGraph}
-This section visually analyzes the power usages of all 5 of the smart speakers summed together under different commands.
+This section attempts to analyze the power usage of all 5 of the smart speakers for different commands.
 
-The first graph in figure \ref{fig:weatherSum} shows a time frame where each device was unmuted and muted for a period. This shows if muting and unmuting the devices affected the power or network usage. There are changes on the first run-through, but when repeating the process nothing happens. Further run-throughs show that power usage stayed the same. In the last half of the graph, we queried each smart speaker for the weather while all other smart speakers were muted at the 18:30 mark. We query each device 3-4 times for the weather. The Eufy had the smallest spike for the ``what\'s the weather'' command at 400 mW, then the Google Home at 600 mW, and finally the Echo Dot at 2000 mW.
+In Figure \ref{fig:weatherSum} we queried each smart speaker for the weather while all other smart speakers were muted at the 18:30 mark. We query each device 3-4 times for the weather. The Eufy had the smallest spike for the ``what is the weather'' command at 400 mW, then the Google Home at 600 mW, and finally the Echo Dot at 2000 mW, consistent with results in Section \ref{Smart Speaker Power Spikes When Asked for Weather}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/weatherSum.png}
-  \caption{5 Smart Speakers Power Summed Up. Toggled the mute button and queried each device for the weather.}
+  \caption{5 Smart Speakers Power Summed Together.}
   \label{fig:weatherSum}
 \end{figure}
 
-The next graph, \ref{fig:mixedNewsSum}, shows the smart speakers power usage when asked for the news. Each speaker was asked for the news. This graph and the rest of the summed graphs in this section use the same notation for signifying commands. Two dots of the same color on the same y-axis level signify the start and end of the command for a specific device.
+Figure \ref{fig:mixedNewsSum}, shows the smart speakers power usage when asked for the news. This graph and the rest of the summed graphs in this section use the same notation for signifying commands: Two dots of the same color on the same y-axis level signify the start and end of the command for a specific device.
 
-In figure \ref{fig:mixedNewsSum}, all devices have a spike at the beginning and end of the command and maintain a steady energy usage in between that is slightly higher than the idle energy used. The peak to peak spike of the Eufy Genie is the smallest at 350 mW, then the Google Home at 500 mW, and finally the Echo Dot at 1900 mW.
+In Figure \ref{fig:mixedNewsSum}, all devices have a spike at the beginning and end of the command and maintain a steady energy usage in between that is slightly higher than the idle energy used. The peak to peak spike of the Eufy Genie is the smallest at 350 mW, then the Google Home at 500 mW, and finally the Echo Dot at 1900 mW.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/mixedNewsSum.png}
-  \caption{5 Smart Speakers Power Summed Up. Queried each device for the
-  news.}
+  \caption{5 Smart Speakers Power Summed Up. Queried each device for the news.}
   \label{fig:mixedNewsSum}
 \end{figure}
 
-The next graph, \ref{fig:bestBballSum}, shows the smart speakers when asked for the best basketball player. The annotation scheme is the same as before. Each smart speaker is queried for the best basketball player in consecutive order four times. Like before, the Eufy has a power spike of 420 mW peak to peak, the Google Home has a power Spike of 720 mW, and the Echo Dot has a power spike of 2180 mW.
+Figure \ref{fig:bestBballSum} shows the smart speakers when asked for the best basketball player. The annotation scheme is the same as before. Each smart speaker is queried for the best basketball player in consecutive order four times. Like before, the Eufy has the smallest power spike at 420 mW peak to peak, the Google Home has a power Spike of 720 mW, and the Echo Dot has a power spike of 2180 mW.
 
-When looking at graph \ref{fig:bestBballSum}, there is a power spike that is unaccounted for in correspondence to the event log at 18:12. We made a query, invoking all other power spikes but we did not do anything for the power spike at 18:12 that is higher than the other Eufy power spikes shown in figure \ref{fig:bestBballSum}.
+When looking at graph \ref{fig:bestBballSum}, there is a power spike that is unaccounted for in correspondence to the event log at 18:12.
 
-To figure what the power spike at 18:12 is, we separated the graphs into individual power traces as shown in figure \ref{fig:bestBballSeperate}. From this graph, the power spike at 18:12 is attributed to the Echo Dot 2 because it is the only trace with a spike occurring. We then looked at the individual network usage for each of these devices in this time frame as shown in figure \ref{fig:bestBballNetwork}. At 18:12, there is no significant network usage.
+To figure what the power spike at 18:12 is, we separated the graphs into individual power traces as shown in Figure \ref{fig:bestBballSeperate}. From this graph, the power spike at 18:12 is attributed to the Echo Dot 2 because it is the only trace with a spike occurring. We then looked at the individual network usage for each of these devices in this time frame as shown in Figure \ref{fig:bestBballNetwork}. At 18:12, there is no significant network usage.
 
-From figures \ref{fig:bestBballSeperate} and \ref{fig:bestBballNetwork}, we speculate that because there is no network usage during this time, the Echo Dot was doing anything data recording, listening, or was activated. We believe that the computer was covering the Echo Dot, but is briefly moved, exposing the Echo Dot to more light, thus causing the LEDs to brighten. The power usage before the spike and during the spike exactly match that of figure \ref{fig:echolights}, starting at around 1500 mW, rising to about 2300 mW.
+From Figures \ref{fig:bestBballSeperate} and \ref{fig:bestBballNetwork}, we speculate that because there is no network usage during this time but a power spike, the Echo Dot was briefly exposed to more light, causing the LEDs to brighten. The power usage before the spike and during the spike exactly match that of Figure \ref{fig:echolights}, starting at around 1500 mW, rising to about 2300 mW.
 
 \begin{figure}[H]
   \centering
@@ -239,9 +219,11 @@ From figures \ref{fig:bestBballSeperate} and \ref{fig:bestBballNetwork}, we spec
   \label{fig:bestBballNetwork}
 \end{figure}
 
-Figure \ref{fig:spikeVoltages} shows the power spike information for each query type (``what's the weather'' ``what's the news'', ``who's the best basketball player''). For each of these commands, there is always a characteristic power spike that occurs at the beginning of the command. This bar graph also includes the total average spike height for each all three of these commands. The black line at the top of each bar shows the standard deviation. Averaging peak to peak voltage spikes for each device shows the Eufy Genie with a 390 mW spike with 36.1 mW standard deviation, the Google Home with a 606.7 mW spike with 110 mW standard deviation, and the Echo Dot with a 2026.7 mW spike with 149.89 mW standard deviation.
+Figure \ref{fig:spikeVoltages} shows the power spike averages for each query type (``what's the weather'' ``what's the news'', ``who's the best basketball player''). The black line at the top of each bar shows the standard deviation. Averaging peak to peak voltage spikes for each device across all commands shows the Eufy Genie with a 390 mW spike with 36.1 mW standard deviation, the Google Home with a 606.7 mW spike with 110 mW standard deviation, and the Echo Dot with a 2026.7 mW spike with 149.89 mW standard deviation.
 
-Figure \ref{fig:spikeVoltages}, shows that it is possible to determine a smart speaker from a shared power trace if a power spike occurs within the thresholds shown. From this, we conclude it is possible to determine a device model from visual examination of its power usage. This is the first step to testing our hypotheses that it is possible to see what devices are in use from analysis of someone's power line.
+Figure \ref{fig:spikeVoltages}, indicates that it is likely possible to determine a smart speaker from a shared power trace if a power spike occurs within the thresholds shown. From this, we conclude it is possible to determine a device model from visual examination of its power usage.
+
+This is the first step to determine if it may be possible to see what devices are in use from analysis of someone's power line. But in a real house, there are more than just five smart speakers on a power line. The next step is to add noise from high power devices to see if it is still possible to visually determine the device in use from power spikes \ref{sumPowerGraphWithNoise}.
 
 \begin{figure}[H]
   \centering
@@ -250,52 +232,50 @@ Figure \ref{fig:spikeVoltages}, shows that it is possible to determine a smart s
   \label{fig:spikeVoltages}
 \end{figure}
 
-But in a real house, there are more than just five smart speakers on a power line. The next step is to add noise from high power devices to see if it is still possible to visually determine the device in use from power spikes \ref{sumPowerGraphWithNoise}.
-
 \section{Summed Power Graph with Noise}
 \label{sumPowerGraphWithNoise}
-In this section, we introduce noise into the system so that we can determine if the power spike from each smart speaker is still discernible within a summed power graph when we add high power devices.
+In this section, we introduce noise into the summed smart speaker setup so that we can determine if the power spike from each smart speaker is still discernible within a summed power graph when we add high power devices.
 
-In each subsection, there are three traces. The first trace (blue trace) is the summed power usage of our five smart speakers (2 Echo Dots, 2 Eufy Genies, 1 Google Home) when asked for the best basketball player four times. This is the same trace as shown in \ref{fig:bestBballSum}. The second trace (purple trace) is the power usage of a high power device. This trace is the added noise. It maps to various devices as we switch them out. The third trace (red trace) is the sum of both trace 1 and 2. It is the power usage of the smart speakers in the blue trace with the noise from the device in the purple trace.
+In each subsection, there are three traces. The first trace (blue trace) is the summed power usage of our five smart speakers (2 Echo Dots, 2 Eufy Genies, 1 Google Home) when asked for the best basketball player four times. This is the same trace as shown in Figure \ref{fig:bestBballSum}. The second trace (purple trace) is the power usage of a high power device. It maps to various devices as we switch them out. The third trace (red trace) is the sum of both trace 1 and 2.
 
-The x-axis is the time elapsed in seconds. There is no time because the smart speaker trace and `noise' trace are in different time frames. The y-axis is the power used by each device at that time.
+The X-axis is the time elapsed in seconds rather than a specific time stamp because the smart speaker trace and `noise' trace are in different time frames. The Y-axis is the power used by each device at that time.
 
-Below, in figure \ref{fig:fanIdleSeperate}, is an example of the traces used separately. Taking the blue trace (smart speaker power usage) and the purple trace (noise-introducing device) the summed up graph results in the red trace (total power usage). This is shown separately at first, but are summed together for the rest of the paper so that the scale of the noise can be understood.
+Below, in Figure \ref{fig:fanIdleSeperate}, is an example of the traces used separately. This is shown separately at first, but are summed together for the rest of the paper so that the scale of the noise can be understood.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/inUseFanNoiseSeperate.png}
-  \caption{Idle Fan with figure \ref{fig:bestBballSum} trace shown separately.}
+  \caption{Figure \ref{fig:bestBballSum} summed smart speaker power, in use fan noise, and total power shown separately.}
   \label{fig:fanIdleSeperate}
 \end{figure}
 
-Below, we display the smart speaker trace with a PC (Intel NUC), fan, refrigerator, or microwave. Figures \ref{fig:fanIdleSeperate}, \ref{fig:fanIdle}, \ref{fig:uWaveIdle}, \ref{fig:fridgeIdle}, \ref{fig:nucIdle}, and \ref{fig:allIdleNoise} begin with noise from devices while idle or during steady power usage to set a baseline. Then figures \ref{fig:uWaveInUse}, \ref{fig:fridgeInUse}, and \ref{fig:nucInUse} show noise from devices while in use, introducing noise that make visual detection of smart speakers most difficult.
+Below, we display the smart speaker power trace when asked for the best basketball player with noise from a PC (Intel NUC), fan, refrigerator, or microwave in Figures \ref{fig:fanIdleSeperate}, \ref{fig:fanIdle}, \ref{fig:uWaveIdle}, \ref{fig:fridgeIdle}, \ref{fig:nucIdle}, and \ref{fig:allIdleNoise}. In these graphs, high power devices are in idle or steady power state. Then Figures \ref{fig:uWaveInUse}, \ref{fig:fridgeInUse}, and \ref{fig:nucInUse} show noise from the high power devices while in use, introducing noise that make visual detection of smart speakers more difficult.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/inUseFanNoise.png}
-  \caption{Idle Fan with figure \ref{fig:bestBballSum} trace.}
+  \caption{Figure \ref{fig:bestBballSum} summed smart speaker power, in use fan noise, and total power.}
   \label{fig:fanIdle}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/idleuWaveNoise.png}
-  \caption{Idle microwave with figure \ref{fig:bestBballSum} trace.}
+  \caption{Figure \ref{fig:bestBballSum} summed smart speaker power, idle microwave noise, and total power.}
   \label{fig:uWaveIdle}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/idleFridgeNoise.png}
-  \caption{Idle refrigerator with figure \ref{fig:bestBballSum} trace.}
+  \caption{Figure \ref{fig:bestBballSum} summed smart speaker power, idle refrigerator noise, and total power.}
   \label{fig:fridgeIdle}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/idleIntelNUCNoise.png}
-  \caption{Idle PC (Intel NUC) with figure \ref{fig:bestBballSum} trace.}
+  \caption{Figure \ref{fig:bestBballSum} summed smart speaker power, idle idle Intel NUC noise, and total power.}
   \label{fig:nucIdle}
 \end{figure}
 
@@ -306,70 +286,70 @@ Below, we display the smart speaker trace with a PC (Intel NUC), fan, refrigerat
     \label{fig:allIdleNoise}
   \end{figure}
 
-In figures \ref{fig:fanIdle}, \ref{fig:uWaveIdle}, \ref{fig:fridgeIdle}, and \ref{fig:nucIdle}, the power spikes from the smart speakers can still be seen. The Echo Dot power spikes are still visible in the red trace for each graph. The power spikes for the Google Home and Eufy Genie are less visible but can still be seen. Especially when zoomed in as shown in figure \ref{fig:allIdleNoise} where the smart speaker trace is removed.
+In Figures \ref{fig:fanIdle}, \ref{fig:uWaveIdle}, \ref{fig:fridgeIdle}, and \ref{fig:nucIdle}, the power spikes from the smart speakers can still be seen. The Echo Dot power spikes are still visible in the red trace for each graph. The power spikes for the Google Home and Eufy Genie are less visible but can still be seen. Especially when zoomed in as shown in Figure \ref{fig:allIdleNoise}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/inUseuWaveNoiseSeperate.png}
-  \caption{In use Microwave with figure \ref{fig:bestBballSum} trace separately.}
+  \caption{In use Microwave with Figure \ref{fig:bestBballSum} summed smart speaker power separately.}
   \label{fig:uWaveInUseSeperate}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/inUseuWaveNoise.png}
-  \caption{In use Microwave with figure \ref{fig:bestBballSum} trace.}
+  \caption{In use Microwave with Figure \ref{fig:bestBballSum} summed smart speaker power.}
   \label{fig:uWaveInUse}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/inUseFridgeNoise.png}
-  \caption{Fridge in the middle of cooling with figure \ref{fig:bestBballSum} trace.}
+  \caption{Fridge in the middle of cooling with Figure \ref{fig:bestBballSum} summed smart speaker power.}
   \label{fig:fridgeInUse}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/inUseNUCNoise.png}
-  \caption{PC in use with figure \ref{fig:bestBballSum} trace.}
+  \caption{PC in use with Figure \ref{fig:bestBballSum} summed smart speaker power.}
   \label{fig:nucInUse}
 \end{figure}
 
-The figures above show that it is possible to determine the smart speaker in use from visual examination of power spikes even in the presence of noise. If the noise within the house is stable, the power spikes are shifted up as shown in figure \ref{fig:fanIdle}. If the noise within the house is low power then, the spikes visually overpower the noise, as shown in figure \ref{fig:nucIdle}.
+Figures \ref{fig:fanIdle} - \ref{fig:nucInUse} show that it is possible to determine that a smart speaker is in use from visual examination of power spikes even in the presence of noise. If the noise within the house is stable, the power spikes are shifted up as shown in Figure \ref{fig:fanIdle}. If the noise within the house is low power then, the spikes visually overpower the noise, as shown in Figure \ref{fig:nucIdle}.
 
-But if the noise within the house is considerable in magnitude such as the microwave or fridge while in use \ref{fig:uWaveInUse} \ref{fig:fridgeInUse}, this noise will squash the power spikes from the smart speakers. The spikes can no longer be seen, even when zoomed in, as shown in figure \ref{fig:uWaveInUseSeperate}. The smart speaker spikes also disappear if the noise of a device is on the same or a larger magnitude than the power spikes, as shown in figure \ref{fig:nucInUse}. The power spikes can still be seen in the sum graph for this figure, but it would be impossible to visually differentiate between a power spike from a speaker and the noise without knowing the original smart speaker graph.
+But if the noise within the house is considerable in magnitude such as the microwave or fridge while in use \ref{fig:uWaveInUse} \ref{fig:fridgeInUse}, this noise will squash the power spikes from the smart speakers. The spikes can no longer be seen, even when zoomed in, as shown in Figure \ref{fig:uWaveInUseSeperate}. The smart speaker spikes also disappear if the noise of a device is on the same or a larger magnitude than the power spikes, as shown in Figure \ref{fig:nucInUse}. The power spikes can still be seen in the sum graph for this figure, but it is impossible to visually differentiate between a power spike from a speaker and the introduced noise without knowing the original smart speaker graph.
 
-These two cases vary depending on the household. If many battery power devices such as laptops (replacing the NUC) or phones are used, then it would still be possible to determine the power spikes visually. Alternatively, in another case, if high power devices such as the microwave or fridge are not in use often, then the smart speaker spikes can be visually correlated. But if a household has many devices plugged into an outlet for power, then the smart speaker power spikes will disappear from the additive noise of all the devices. Regardless, there are privacy implications in a household's power line. With easy, direct (even remote nowadays), access to a household's power line \cite{griffith_2017}, someone could determine the device in use within a household or what room they are in.
+These two cases vary depending on the household. If many battery power devices such as laptops (replacing the NUC) or phones are used, then it may still be possible to determine the power spikes visually. If high power devices such as the microwave or fridge are not in use often, then the smart speaker spikes may be visually correlated. But if a household has many devices plugged into an outlet for power, then the smart speaker power spikes are likely to disappear from the additive noise of all the devices. Regardless, there are privacy implications in a household's power line. With easy, direct, access to a household's power line \cite{griffith_2017}, someone could determine the device in use within a household.
 
 \section{Smart Speaker Comparison}
 \label{smartSpeakerComparisonSection}
-The figures in section \ref{sumPowerGraph} show that the Echo Dot uses a lot more energy than the other smart speakers. Because of this, we wanted to compare the energy and network usages of the three smart speakers individually so that we can determine trade-offs that they make.
+The figures in Section \ref{sumPowerGraph} show that the Echo Dot uses a lot more energy than the other smart speakers. Because of this, we wanted to compare the energy and network usages of the three smart speakers individually so that we can determine trade-offs that they make.
 
-In the figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, we display the power and network traces for the Echo Dot 1, Eufy Genie 1, and Google Home. We used the same time frame as the graph in figure \ref{fig:bestBballSeperate} for the two graphs below. We removed the second Echo Dot 2 and Eufy Genie 2 so that there is one of each device.
+In the Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, we display the power and network traces for the Echo Dot 1, Eufy Genie 1, and Google Home. We used the same time frame as the graph in Figure \ref{fig:bestBballSeperate} for the two graphs below. We removed the second Echo Dot 2 and Eufy Genie 2 so that there is one of each device.
 
-In the time frame of figures ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, the average power, from greatest to least starts with the Echo Dot (1650 mW), then the Eufy Genie (1325 mW), and the Google Home (1175 mW). For average throughput, from greatest to least, we have the Eufy Genie (1743 bytes), Google Home (800 bytes), and Echo Dot (325 bytes). These results are shown in figure \ref{fig:smartSpeakerComparison}
+In the time frame of Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}, the average power, from greatest to least, starts with the Echo Dot (1650 mW), then the Eufy Genie (1325 mW), and the Google Home (1175 mW). For average throughput, from greatest to least, there is the Eufy Genie (1743 bytes), Google Home (800 bytes), and Echo Dot (325 bytes). These results are shown in Figure \ref{fig:smartSpeakerComparison}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/smartSpeakerSeperate.png}
-  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same graph as figure \ref{fig:bestBballSeperate} with Echo Dot 2 and Eufy Genie removed.}
+  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same graph as Figure \ref{fig:bestBballSeperate} with Echo Dot 2 and Eufy Genie removed.}
   \label{fig:smartSpeakerSeperate}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{figures/smartSpeakerNetworkSeperate.png}
-  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same time frame as figure \ref{fig:smartSpeakerSeperate}}
+  \caption{Power usage of Echo Dot 1, Eufy Genie 1, and Google Home over time when asked ``who is the best basketball player''. Same time frame as Figure \ref{fig:smartSpeakerSeperate}}
   \label{fig:smartSpeakerNetworkSeperate}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{figures/smartSpeakerComparison.png}
-    \caption{Average power and network usage at each second for the Echo Dot, Eufy Genie, and Google Home in the time frame of figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}}
+    \caption{Average power and network usage at each second for the Echo Dot, Eufy Genie, and Google Home in the time frame of Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSpeakerNetworkSeperate}}
     \label{fig:smartSpeakerComparison}
   \end{figure}
 
 
-From figure \ref{fig:smartSpeakerComparison}, we can see that the Echo uses the most power, then the Eufy, then the Google Home. However, the Eufy uses the most network throughput, then the Google Home, then the Echo Dot. At its core, we believe each device is making some tradeoff between power and network usage. Possibly, the Echo dot is trying to do as much on board operations as possible, increasing the power usage. Possibly, the Eufy Genie is constantly querying for information, thus reducing power usage, but increasing network usage. Further analysis to prove this would be interesting.
+From Figure \ref{fig:smartSpeakerComparison}, we can see that the Echo uses the most power, then the Eufy, then the Google Home. However, the Eufy uses the most network throughput, then the Google Home, then the Echo Dot. At its core, we believe each device is making some tradeoff between power and network usage. Possibly, the Echo dot is trying to do as much on board operations as possible, increasing the power usage. Possibly, the Eufy Genie is constantly querying for information, thus reducing power usage, but increasing network usage. Possibly, the Echo Dot has poor power optimizations. Further analysis to see why could be interesting.
