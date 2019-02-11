@@ -2,7 +2,7 @@
 \label{Results}
 This chapter covers different network and power usage patterns for the IoT devices in the testbed. First, Section \ref{swappingSwitch} informally compares the smart switches between devices to confirm that they are accurate enough for this research's purposes. Section \ref{General Analysis} covers smart speaker and streaming device network and power use while idle, in use, and during first boot. Section \ref{General Analysis} serves as precursory analysis to fingerprint devices and give example uses of the database and visualizer tool.
 
-After general analysis, Section \ref{Power Analysis on Smart Speakers} shows how a power trace may highlight the presence of a user in their home. Sections \ref{sumPowerGraph} and \ref{sumPowerGraphWithNoise} cover summed power graphs of the smart speakers with and without noise from high power household devices. Finally, Section \ref{smartSpeakerComparisonSection} ends with a comparison between smart speakers for further general analysis.
+After general analysis, Section \ref{Power Analysis on Smart Speakers} shows how a power trace may highlight the presence of a user in their home. Sections \ref{sumPowerGraph} and \ref{sumPowerGraphWithNoise} cover summed power graphs of the smart speakers with and without noise from high power household devices.
 
 When obtaining data, most of the packets are encrypted, so the data presented focuses on metadata such as size, protocol, source IP, and destination IP. For power analysis, we focus on the power used at each second.
 
@@ -35,12 +35,12 @@ In every case, the traces swapped as we swapped the device connected to each sma
 
 \section{General Analysis}
 \label{General Analysis}
-The figures shown in this section give examples of how the database and grapher tool is used. The figures also demonstrate a strong correlation between what the device is doing and its network/power usage, serving as data to fingerprint each smart speaker.
+The figures shown in this section give examples of how the database and grapher tool is used. The figures also demonstrate a strong correlation between a device's network/power usage and what it is doing, serving as data to fingerprint each smart speaker.
 
 Frawley's paper contains a more in-depth analysis of this topic. His paper includes GeoIP \cite{maxmind} information from Cal Poly's ITS servers \cite{its} that highlights the locations and companies the network packets are sent to and received from. Frawley's paper also includes data of unencrypted packets being sent and received along with the text within them.
 
 \subsection{Google Home Mini General Analysis}
-The Google Home Mini's idle traffic broadcasts SSDP (Simple Service Discovery Protocol) packets once every minute. The SSDP packets are a discovery request packet for every IoT device on the network that supports UPnP (Universal Plug and Play). After devices such as the Echo Dot, Samsung TV, and the Chromebook receive an SSDP packet, they respond with information about themselves in a .xml file. This XML file contains details regarding the device operating system and more. Google also sends encrypted TCP packets to Google every 10 minutes. Figure \ref{fig:home} shows the Google Home Mini's idle traffic. The large spikes are the encrypted TCP packets, and the smaller spikes are the SSDP/UPnP packets.
+The Google Home Mini's idle traffic broadcasts SSDP (Simple Service Discovery Protocol) packets once every minute. SSDP packets are a discovery request packet for every IoT device on the network that supports UPnP (Universal Plug and Play). After devices such as the Echo Dot, Samsung TV, and the Chromebook receive an SSDP packet, they respond with a .xml file containing details regarding the device, operating system, and more. Google also sends encrypted TCP packets to Google every 10 minutes. Figure \ref{fig:home} shows the Google Home Mini's idle traffic. The large spikes are the encrypted TCP packets, and the smaller spikes are the SSDP/UPnP packets.
 
 \begin{figure}[H]
   \centering
@@ -59,7 +59,7 @@ Figure \ref{fig:homequery} shows a graph of the Google Home Mini's network and p
 \end{figure}
 
 \subsubsection{Google Chromecast}
-Figure \ref{fig:ccboth} shows the Chromecast initial startup graph. On startup, the Chromecast shows an intro tutorial video and downloads a firmware update. After rebooting twice, it is ready to go.
+Figure \ref{fig:ccboth} shows the Chromecast's power and network usage during startup. On startup, the Chromecast shows an intro tutorial video and downloads a firmware update. After rebooting twice, it is ready to go.
 
 \begin{figure}[H]
   \centering
@@ -68,7 +68,7 @@ Figure \ref{fig:ccboth} shows the Chromecast initial startup graph. On startup, 
   \label{fig:ccboth}
 \end{figure}
 
-Figure \ref{fig:ccstream} shows the Chromecast streaming graph. In this time frame, the Chromecast streams video in the marked box.
+Figure \ref{fig:ccstream} shows the Chromecast's power and network usage while streaming highlighted in green.
 
 \begin{figure}[H]
   \centering
@@ -77,7 +77,7 @@ Figure \ref{fig:ccstream} shows the Chromecast streaming graph. In this time fra
   \label{fig:ccstream}
 \end{figure}
 
-Additionally, the Chromecast idle graph is shown in Figure \ref{fig:ccbg}. In this time frame, there are consistent spikes to the Chromecast every 2 minutes. During these spikes, the Chromecast is showing a new background that it downloads from Google Servers.
+Additionally, Figure \ref{fig:ccbg} shows the Chromecast's network and power usage while idle. In this time frame, there are consistent power and network spikes every two minutes. During these spikes, the Chromecast is downloading an image to update the background on the TV it is connected to.
 
 \begin{figure}[H]
   \centering
@@ -87,6 +87,7 @@ Additionally, the Chromecast idle graph is shown in Figure \ref{fig:ccbg}. In th
 \end{figure}
 
 \subsubsection{Amazon Fire Stick}
+Figure \ref{fig:fireboth} shows the Amazon Fire Stick's power and network usage during startup. On first boot, the fire stick downloads an update, reboots twice, then downloads certificates from Symantec and Verisign.
 
 \begin{figure}[H]
   \centering
@@ -95,9 +96,7 @@ Additionally, the Chromecast idle graph is shown in Figure \ref{fig:ccbg}. In th
   \label{fig:fireboth}
 \end{figure}
 
-Figure \ref{fig:fireboth} shows the Amazon Fire Stick startup graph. On first boot, the fire stick downloads an update, reboots twice, then downloads certificates from Symantec and Verisign.
-
-When streaming, the Fire Stick increases throughput and power usage with a spike at the beginning and end of streaming in power usage as shown in Figure \ref{fig:fsyt}.
+Figure \ref{fig:fsyt} shows the Amazon Fire Stick's power and network usage while streaming. When streaming, the Fire Stick increases throughput and power usage. There are a few power spikes at the beginning of the stream time and one power spike at the end with raised power usage in between.
 
 \begin{figure}[H]
   \centering
@@ -107,7 +106,7 @@ When streaming, the Fire Stick increases throughput and power usage with a spike
 \end{figure}
 
 \subsubsection{Roku Express}
-When streaming, the Roku's power usage and network throughput rise and stay at a constant level until the video streaming is complete. At which point it drops back down when done.
+Figure \ref{fig:roku} shows the Roku Express's power and network usage while streaming. When streaming, the Roku's power usage and network throughput rise and stay at a constant level until the video streaming is complete. At which point it drops back down when done.
 
 \begin{figure}[H]
   \centering
@@ -117,7 +116,7 @@ When streaming, the Roku's power usage and network throughput rise and stay at a
 \end{figure}
 
 \subsection{General Analysis Discussion}
-From all the figures in this section, there is a visual correlation between network/power usage and what each device is doing. During periodic updates, the smart speakers and streaming devices have periodic network/power usage spikes as shown in Figure \ref{fig:ccbg}. While streaming, the power/network usage increases for the period of the stream as shown in \ref{fig:ccstream}, \ref{fig:fsyt}, and \ref{fig:rokuStreaming}. This strong correlation shows the value of the database and visualizer tool for IoT device analysis. It also indicates that it may be possible to use network throughput/power usage over time to understand what a device is doing.
+From all the figures in this section, there is a visual correlation between network/power usage and what a device is doing. During periodic updates, the smart speakers and streaming devices have periodic network/power usage spikes as shown in Figure \ref{fig:ccbg}. While streaming, the power/network usage increases for the period of the stream as shown in \ref{fig:ccstream}, \ref{fig:fsyt}, and \ref{fig:rokuStreaming}. This strong correlation shows the value of the database and visualizer tool for IoT device analysis. It also indicates that it may be possible to use network throughput/power usage over time to understand what a device is doing.
 
 \section{Power Analysis on Smart Speakers}
 \label{Power Analysis on Smart Speakers}
@@ -154,7 +153,7 @@ In the time frame of Figures \ref{fig:smartSpeakerSeperate} and \ref{fig:smartSp
     \label{fig:smartSpeakerComparison}
   \end{figure}
 
-From Figure \ref{fig:smartSpeakerComparison}, we can see that the Echo uses the most power, then the Eufy, then the Google Home. However, the Eufy uses the most network throughput, then the Google Home, then the Echo Dot. At its core, we believe each device is making some tradeoff between power and network usage. Possibly, the Echo dot is trying to do as much on board operations as possible, increasing the power usage. Possibly, the Eufy Genie is constantly querying for information, thus reducing power usage, but increasing network usage. Possibly, the Echo Dot has poor power optimizations. Further analysis to see why could be interesting.
+From Figure \ref{fig:smartSpeakerComparison}, we can see that the Echo uses the most power, then the Eufy, then the Google Home. However, the Eufy uses the most network throughput, then the Google Home, then the Echo Dot. We believe each device is making some tradeoff between power and network usage. Possibly, the Echo dot is trying to do as much on board operations as possible, increasing the power usage. Possibly, the Eufy Genie is constantly querying for information, thus reducing power usage, but increasing network usage. But it is also possible the Echo Dot has poor power optimizations. Further analysis to understand this could be interesting.
 
 \subsection{Echo Dot Brightness Sensor}
 \label{Echo Dot Brightness Sensor}
@@ -347,7 +346,7 @@ In Figures \ref{fig:fanIdle}, \ref{fig:uWaveIdle}, \ref{fig:fridgeIdle}, and \re
   \label{fig:nucInUse}
 \end{figure}
 
-Figures \ref{fig:fanIdle} - \ref{fig:nucInUse} show that it is possible to determine that a smart speaker is in use from visual examination of power spikes even in the presence of noise. If the noise within the house is stable, the power spikes are shifted up as shown in Figure \ref{fig:fanIdle}. If the noise within the house is low power then, the spikes visually overpower the noise, as shown in Figure \ref{fig:nucIdle}.
+Figures \ref{fig:fanIdle} - \ref{fig:nucInUse} show that it is possible to determine what smart speaker is in use from visual examination of power spikes even in the presence of noise. If the noise within the house is stable, the power spikes are shifted up as shown in Figure \ref{fig:fanIdle}. If the noise within the house has a low magnitude, the smart speaker power spikes visually overpower the noise, as shown in Figure \ref{fig:nucIdle}.
 
 But if the noise within the house is considerable in magnitude such as the microwave or fridge while in use \ref{fig:uWaveInUse} \ref{fig:fridgeInUse}, this noise will squash the power spikes from the smart speakers. The spikes can no longer be seen, even when zoomed in, as shown in Figure \ref{fig:uWaveInUseSeperate}. The smart speaker spikes also disappear if the noise of a device is on the same or a larger magnitude than the power spikes, as shown in Figure \ref{fig:nucInUse}. The power spikes can still be seen in the sum graph for this figure, but it is impossible to visually differentiate between a power spike from a speaker and the introduced noise without knowing the original smart speaker graph.
 
