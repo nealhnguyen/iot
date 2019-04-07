@@ -198,9 +198,11 @@
 %
 % \listoftables:
 \def\listtablename{LIST OF TABLES}
-
-\def\listlistingname{LIST OF CODE LISTINGS}
 %                  ~~~~~~~~~~~~~~
+%
+% \listofcodelistings:
+\def\listlistingname{LIST OF CODE LISTINGS}
+%                    ~~~~~~~~~~~~~~~~~~~~~
 %
 % \thebibliography:
 \def\bibname{BIBLIOGRAPHY}
@@ -216,6 +218,10 @@
 %
 % table environment:
 \def\tablename{Table}
+%              ~~~~~
+%
+% codelisting environment:
+\def\listingname{Code}
 %              ~~~~~
 %
 % \chapter:
