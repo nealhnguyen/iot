@@ -200,10 +200,6 @@
 \def\listtablename{LIST OF TABLES}
 %                  ~~~~~~~~~~~~~~
 %
-% \listofcodelistings:
-\def\listlistingname{LIST OF CODE LISTINGS}
-%                    ~~~~~~~~~~~~~~~~~~~~~
-%
 % \thebibliography:
 \def\bibname{BIBLIOGRAPHY}
 %            ~~~~~~~~~~~~
@@ -218,10 +214,6 @@
 %
 % table environment:
 \def\tablename{Table}
-%              ~~~~~
-%
-% codelisting environment:
-\def\listingname{Code}
 %              ~~~~~
 %
 % \chapter:
@@ -336,34 +328,34 @@
     \thispagestyle{empty}
     \setcounter{page}{1}
 
-  	\vfill\null
-    \vspace{-0.2in}
+    \vfill\null
+    \vspace{-1in}
   \begin{center}
-		\MakeTextUppercase{\@title}
+        \MakeTextUppercase{\@title}
     % or another variation would be:
     % \textsc{\@title}
 
-		%\vfill\null
-		\addvspace{1.4in}
+        %\vfill\null
+        \addvspace{1.4in}
 
     A Thesis \par
     presented to \par
     the Faculty of California Polytechnic State University, \par
     \@campus
 
-		\addvspace{1.4in}
-		%\vfill\null
+        \addvspace{1.4in}
+        %\vfill\null
 
 
-		In Partial Fulfillment \par
-		of the Requirements for the Degree \par
-		\@degree~in~\@field
+        In Partial Fulfillment \par
+        of the Requirements for the Degree \par
+        \@degree~in~\@field
 
-		\addvspace{0.65in}
+        \addvspace{0.65in}
 
-		by \par
-		\@author \par
-		\@degreemonth~\@degreeyear
+        by \par
+        \@author \par
+        \@degreemonth~\@degreeyear
 
 
 \end{center}
@@ -384,7 +376,7 @@
 \begin{samepage}
 
 \begin{center}
-		APPROVAL PAGE
+        APPROVAL PAGE
 \end{center}
 
 \par
@@ -399,12 +391,12 @@ DATE SUBMITTED: \@degreemonth~\@degreeyear
 
 \begin{tabular}{lcc}
 
-		\underline{\makebox[2.1in][l]{\@chair}}        & \hspace{0.5in} &  \underline{\makebox[2.1in][l]{}} \\
-		Advisor or Committee Chair \vspace{0.75in}   & & Signature \\
-		\underline{\makebox[2.1in][l]{\@othermemberA}} & &  \underline{\makebox[2.1in][l]{}} \\
-		Committee Member    \vspace{0.75in}          & & Signature \\
-		\underline{\makebox[2.1in][l]{\@othermemberB}} & &  \underline{\makebox[2.1in][l]{}} \\
-		Committee Member    \vspace{0.75in}          & & Signature \\
+        \underline{\makebox[2.1in][l]{\@chair}}        & \hspace{0.5in} &  \underline{\makebox[2.1in][l]{}} \\
+        Advisor or Committee Chair \vspace{0.75in}   & & Signature \\
+        \underline{\makebox[2.1in][l]{\@othermemberA}} & &  \underline{\makebox[2.1in][l]{}} \\
+        Committee Member    \vspace{0.75in}          & & Signature \\
+        \underline{\makebox[2.1in][l]{\@othermemberB}} & &  \underline{\makebox[2.1in][l]{}} \\
+        Committee Member    \vspace{0.75in}          & & Signature \\
 
 \end{tabular}
 
@@ -420,21 +412,21 @@ DATE SUBMITTED: \@degreemonth~\@degreeyear
 \begin{alwayssingle}
 
 \begin{center}
-		COMMITTEE MEMBERSHIP
+        COMMITTEE MEMBERSHIP
 \end{center}
 \par
 \vspace*{0.5in}
 
-\begin{tabular}{lp{3in}}
+\begin{tabular}{rp{3.01in}}
 TITLE:  &\@title     \par\\
 AUTHOR: &\@author     \par\\
 DATE SUBMITTED: &\@degreemonth~\@degreeyear  \par\\
 
 \par\\
 
-COMMITTEE CHAIR:  &\noindent\begin{minipage}[t]{\textwidth}\begin{flushleft}\@chair\end{flushleft}\end{minipage}            \par\\\\
-COMMITTEE MEMBER: &\noindent\begin{minipage}[t]{\textwidth}\begin{flushleft}\@othermemberA\end{flushleft}\end{minipage}     \par\\\\
-COMMITTEE MEMBER: &\noindent\begin{minipage}[t]{\textwidth}\begin{flushleft}\@othermemberB\end{flushleft}\end{minipage}     \par\\\\
+COMMITTEE CHAIR:  &\begin{minipage}[t]{\columnwidth}\begin{flushleft}\@chair\end{flushleft}\end{minipage}  \par\\\\
+COMMITTEE MEMBER: &\begin{minipage}[t]{\columnwidth}\begin{flushleft}\@othermemberA\end{flushleft}\end{minipage}     \par\\\\
+COMMITTEE MEMBER: &\begin{minipage}[t]{\columnwidth}\begin{flushleft}\@othermemberB\end{flushleft}\end{minipage}     \par\\\\
 \end{tabular}
 
 \end{alwayssingle}
@@ -1024,17 +1016,6 @@ Thesis Committee Chair
 
 \let\l@table\l@figure
 
-% \def\listoftables{\@restonecolfalse
-%   \if@twocolumn\@restonecoltrue\onecolumn\fi
-%   \chapter*{\listlistingname\@mkboth{\uppercase{\listlistingname}}%
-% {\uppercase{\listlistingname}}}
-%    \addcontentsline{toc}{chapter}{\listlistingname}
-%    {\ssp\@starttoc{lot}\addtocontents{lot}{\hbox to \linewidth{\hspace{1.5em}Table\hfill Page}}}\if@restonecol
-%     \twocolumn\fi}
-
-
-% \let\l@table\l@figure
-
 
 
 %    ****************************************
@@ -1063,7 +1044,9 @@ Thesis Committee Chair
   \addcontentsline{toc}{chapter}{\bibname}
   \list{\@biblabel{\arabic{enumiv}}}{\settowidth\labelwidth{\@biblabel{#1}}%
     \leftmargin\labelwidth
+    \advance\leftmargin20pt% change 20 pt according to your needs
     \advance\leftmargin\labelsep
+    \setlength\itemindent{-20pt}% change using the inverse of the length used before
     \usecounter{enumiv}%
     \let\p@enumiv\@empty
     \def\theenumiv{\arabic{enumiv}}}%
@@ -1265,7 +1248,7 @@ Thesis Committee Chair
 \def\ext@figure{lof}
 \def\fnum@figure{\figurename~\thefigure}
 \def\figure{\@float{figure}}
-\def\endfigure{\end@float}
+\let\endfigure\end@float
 \@namedef{figure*}{\@dblfloat{figure}}
 \@namedef{endfigure*}{\end@dblfloat}
 
@@ -1279,7 +1262,7 @@ Thesis Committee Chair
 \def\ext@table{lot}
 \def\fnum@table{\tablename~\thetable}
 \def\table{\@float{table}}
-\def\endtable{\end@float}
+\let\endtable\end@float
 \@namedef{table*}{\@dblfloat{table}}
 \@namedef{endtable*}{\end@dblfloat}
 

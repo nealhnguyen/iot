@@ -3,7 +3,7 @@
 \usepackage{etex}
 \usepackage[morefloats=125]{morefloats}
 \usepackage[hyphens]{url}
-\usepackage[caption=false]{subfig}
+\usepackage{subfig}
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{amssymb}
@@ -11,6 +11,7 @@
 \usepackage[letterpaper]{geometry}
 \usepackage[overload]{textcase}
 \usepackage{color}
+\usepackage[nonumberlist,toc]{glossaries}
 \usepackage{wrapfig}
 \usepackage{longtable}
 \usepackage{morefloats}
@@ -28,11 +29,11 @@
 \usepackage{booktabs}
 \usepackage{inconsolata}
 
-\hypersetup{final}
-
-\graphicspath{ {figures/} }
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
 
 \makeindex
+\makeglossaries
 
 % Shrink the size of headers
 \titleformat{\chapter}[display]
@@ -48,9 +49,17 @@
 \titleformat*{\paragraph}{\small\bfseries}
 \titleformat*{\subparagraph}{\small\bfseries}
 
-\setlength{\parindent}{0.25in} \setlength{\parskip}{6pt}
+\bibliographystyle{abbrv}
+
+% Make \tindent indent pages if you have no paragraph indent
+\newlength\tindent
+\setlength{\tindent}{\parindent}
+\setlength{\parindent}{0.in} \setlength{\parskip}{1.em}
+\renewcommand{\indent}{\hspace*{\tindent}}
+% Otherwise, comment out the above and uncomment this for default indentation on each paragraph
+%\setlength{\parindent}{0.25in} \setlength{\parskip}{6pt}
+
 \geometry{verbose,nohead,tmargin=1in,bmargin=1in,lmargin=1.5in,rmargin=1in}
-\setcounter{tocdepth}{2}
 
 % Different font in captions (single-spaced, bold) ------------
 \newcommand{\captionfonts}{\small\bf\ssp}
@@ -74,6 +83,22 @@
 \crefname{app}{appendix}{appendices}
 \Crefname{app}{Appendix}{Appendices}
 
+% Add Figures folder to the graphics path
+\graphicspath{{Figures/}{figures/}}
+
+% Options for hyperref
+\hypersetup{
+    bookmarksnumbered=true,
+    bookmarksopen=false,
+    bookmarksopenlevel=0,
+    colorlinks=false,
+    pdfstartview=Fit,
+    pdfborder={0 0 0},
+}
+
+\newcounter{qcounter}
+\providecommand{\keywords}[1]{\textbf{\textit{Keywords:}} #1}
+
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
@@ -94,10 +119,6 @@
   frame = single,
 }
 
-\renewcommand\lstlistingname{Listing}
-\renewcommand\lstlistlistingname{LIST OF CODE LISTINGS}
-
-%\setlength\parindent{0pt}
 \begin{document}
 
 % Declarations for Front Matter
@@ -131,15 +152,12 @@
 
 \addcontentsline{toc}{chapter}{LIST OF CODE LISTINGS}
 
+% Add CHAPTER into table of contents.
 \addtocontents{toc}{%
    \noindent CHAPTER
 }
 
 \end{frontmatter}
-
-% Avoid widows and orphans
-\widowpenalty10000
-\clubpenalty10000
 
 \pagestyle{plain}
 
@@ -147,14 +165,18 @@
 
 \input{chapter-outline}
 
-\bibliographystyle{IEEEtran}
-\bibliography{IEEEabrv,bibliography}
+\nocite{*}
+\bibliography{bibliography}
 
 % Indents Appendix in Table of Contents
 \makeatletter
 \addtocontents{toc}{\let\protect\l@chapter\protect\l@section}
 \makeatother
 
+% Hack to make Appendices to appear in Table of Contents
+\addtocontents{toc}{%
+   \noindent APPENDICES
+}
 \begin{appendices}
 \input{appendix-outline}
 \end{appendices}
